@@ -15,3 +15,28 @@ test('visual graph rejects cycles and unknown operations',()=>{assert.throws(()=
 test('world streamer obeys active chunk budget and unloads',async()=>{const s=N.createWorldStreamer({maxActive:9});let unloaded=0;const a=await s.update([0,0,0],3);assert.equal(a.active,9);const b=await s.update([500,0,500],3,{unload:()=>unloaded++});assert.equal(b.active,9);assert.equal(unloaded,9);});
 test('vehicle dynamics accelerates and returns bounded steering state',()=>{const v=N.stepVehicle({velocity:[0,0,0],heading:0},{throttle:1,steer:1},1/60);assert.ok(v.speed>0);assert.ok(Number.isFinite(v.heading));assert.equal(v.force.length,3);});
 test('vehicle dynamics rejects invalid velocity',()=>assert.throws(()=>N.stepVehicle({velocity:[NaN,0,0]}),/Invalid/));
+
+test('Baghdad theme produces a deterministic, locally-styled city plan', () => {
+  const a = N.generateWorld({ seed: 91, count: 36, theme: 'baghdad' });
+  const b = N.generateWorld({ seed: 91, count: 36, theme: 'baghdad' });
+  assert.deepEqual(a, b);
+  assert.equal(a.objects.length, 36);
+  assert.ok(a.objects.every(o => o.type === 'box' && o.position[1] >= o.scale[1] / 2));
+  assert.ok(a.objects.some(o => o.name.startsWith('baghdad-tower-')));
+});
+
+test('procedural world converts into a valid, bounded MDR scene for direct editor import', () => {
+  const plan = N.generateWorld({ seed: 7, count: 12, theme: 'baghdad' });
+  const scene = N.toSceneProject(plan);
+  assert.equal(scene.schema, 'mdr-scene');
+  assert.equal(scene.name, 'بغداد · مشهد إجرائي');
+  assert.equal(scene.objects.length, 12);
+  assert.ok(scene.objects.every(o => o.type === 'box' && o.rotation.length === 3));
+});
+
+test('procedural scene conversion rejects unsafe ids, duplicate ids, and oversized plans', () => {
+  const plan = N.generateWorld({ seed: 9, count: 2 });
+  assert.throws(() => N.toSceneProject({ ...plan, objects: [{ ...plan.objects[0], id: '../bad' }] }), /Invalid procedural scene object/);
+  assert.throws(() => N.toSceneProject({ ...plan, objects: [plan.objects[0], plan.objects[0]] }), /Invalid procedural scene object/);
+  assert.throws(() => N.toSceneProject({ ...plan, objects: Array(501).fill(plan.objects[0]) }), /Invalid procedural world plan/);
+});

@@ -1,5 +1,12 @@
 # MDR Platform — Changelog
 
+## 3.1.0 — Offline mobile & procedural city update
+
+- Added installable Arabic RTL PWA metadata, offline caching and mobile install/status affordances.
+- Added a deterministic Baghdad brick-city theme and direct, guarded import of generated scenes into MDR Studio.
+- Advanced Android metadata to 3.1.0 / versionCode 16.
+- Added focused tests for the city planner, safe scene conversion and PWA assets.
+
 ## 3.0.3 — Mobile and Web release
 
 - Promoted Android/Web metadata to 3.0.3 / versionCode 15 and aligned the page title and release badge.

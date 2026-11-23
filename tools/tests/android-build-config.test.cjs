@@ -21,9 +21,9 @@ test('BuildConfig generation is enabled for AppActivity BuildConfig.DEBUG', () =
 test('Android app version and displayed label are consistent', () => {
   const gradle = read('app/build.gradle');
   const strings = read('app/src/main/res/values/strings.xml');
-  assert.match(gradle, /versionName\s+"3\.0\.3"/);
-  assert.match(gradle, /versionCode\s+15/);
-  assert.match(strings, /MDR Platform 3\.0\.3/);
+  assert.match(gradle, /versionName\s+"3\.1\.0"/);
+  assert.match(gradle, /versionCode\s+16/);
+  assert.match(strings, /MDR Platform 3\.1\.0/);
 });
 
 test('AndroidX WebKit dependency remains declared', () => {
@@ -59,7 +59,7 @@ test('factory-generated Android module explicitly enables BuildConfig', () => {
 
 test('Web document title and in-app version badge match the Android release', () => {
   const html = read('app/src/main/assets/index.html');
-  assert.match(html, /<title>MDR Platform 3\.0\.3/);
-  assert.match(html, /MDR · v3\.0\.3/);
+  assert.match(html, /<title>MDR Platform 3\.1\.0/);
+  assert.match(html, /MDR · v3\.1\.0/);
   assert.doesNotMatch(html, /3\.0\.[12]/);
 });

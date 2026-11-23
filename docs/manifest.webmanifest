@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "MDR Platform",
+  "short_name": "MDR",
+  "description": "مساحة عربية لبناء عوالم ثلاثية الأبعاد ومشاريع Android.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#08090c",
+  "theme_color": "#0a0b0e",
+  "icons": [
+    { "src": "./mdr-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

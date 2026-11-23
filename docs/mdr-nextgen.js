@@ -14,12 +14,38 @@
     const seed = (Number(options.seed) >>> 0) || 0x4d4452;
     let state = seed;
     const random = () => { state = (1664525 * state + 1013904223) >>> 0; return state / 4294967296; };
-    const theme = ['forest', 'desert', 'snow', 'alien'].includes(options.theme) ? options.theme : 'forest';
+    const theme = ['forest', 'desert', 'snow', 'alien', 'baghdad'].includes(options.theme) ? options.theme : 'forest';
     const count = Math.floor(clamp(options.count ?? 48, 1, 500));
     const spread = clamp(options.spread ?? 80, 10, 500);
-    const palette = { forest: ['#315c3a','#547a42','#8caa62'], desert: ['#b77b42','#d5a35b','#e4c58a'], snow: ['#9dbbd0','#dce8ef','#718ba4'], alien: ['#583d82','#2e8b83','#b64e8c'] }[theme];
-    const objects = Array.from({ length: count }, (_, i) => ({ id: `world-${seed}-${i}`, type: random() > .82 ? 'sphere' : 'box', name: `${theme}-${i+1}`, position: [(random()-.5)*spread, .5, (random()-.5)*spread], scale: [0.6+random()*2,0.6+random()*4,0.6+random()*2], color: palette[Math.floor(random()*palette.length)] }));
-    return { schema: 'mdr-world-plan', version: 1, seed, theme, objects, metadata: { generator: 'MDR Procedural Planner', aiProvider: options.aiProvider || null, note: 'Procedural generation; external AI inference is not included.' } };
+    const palette = { forest: ['#315c3a','#547a42','#8caa62'], desert: ['#b77b42','#d5a35b','#e4c58a'], snow: ['#9dbbd0','#dce8ef','#718ba4'], alien: ['#583d82','#2e8b83','#b64e8c'], baghdad: ['#a85632','#d08a55','#d7ae78','#80543c'] }[theme];
+    const side = Math.ceil(Math.sqrt(count));
+    const objects = Array.from({ length: count }, (_, i) => {
+      if (theme === 'baghdad') {
+        const height = 2.2 + random() * 5.2;
+        const column = i % side, row = Math.floor(i / side);
+        const spacing = Math.max(5, spread / side);
+        const tower = i % 17 === 0;
+        return { id: `world-${seed}-${i}`, type: 'box', name: tower ? `baghdad-tower-${i+1}` : `baghdad-house-${i+1}`, position: [(column - (side - 1) / 2) * spacing, height / 2, (row - (side - 1) / 2) * spacing], scale: [tower ? 1.6 : 2.4 + random(), height, tower ? 1.6 : 2.1 + random()], color: palette[Math.floor(random() * palette.length)] };
+      }
+      return { id: `world-${seed}-${i}`, type: random() > .82 ? 'sphere' : 'box', name: `${theme}-${i+1}`, position: [(random()-.5)*spread, .5, (random()-.5)*spread], scale: [0.6+random()*2,0.6+random()*4,0.6+random()*2], color: palette[Math.floor(random()*palette.length)] };
+    });
+    return { schema: 'mdr-world-plan', version: 1, seed, theme, objects, metadata: { generator: 'MDR Procedural Planner', note: 'Deterministic local generation.' } };
+  }
+
+  // Convert bounded procedural output to the stable MDR scene format for direct import.
+  function toSceneProject(plan) {
+    if (!plan || plan.schema !== 'mdr-world-plan' || plan.version !== 1 || !Array.isArray(plan.objects) || plan.objects.length < 1 || plan.objects.length > 500) throw new Error('Invalid procedural world plan');
+    const ids = new Set();
+    const objects = plan.objects.map((raw, index) => {
+      if (!raw || !safeId(raw.id) || ids.has(raw.id) || !['box','sphere','cylinder','directionalLight'].includes(raw.type)) throw new Error('Invalid procedural scene object');
+      ids.add(raw.id);
+      const vector = (value, fallback) => { const v = value || fallback; if (!Array.isArray(v) || v.length !== 3 || !v.every(Number.isFinite)) throw new Error('Invalid procedural transform'); return v.map(n => clamp(n, -500, 500)); };
+      const color = /^#[0-9a-f]{6}$/i.test(raw.color || '') ? raw.color : '#a85632';
+      const scale = vector(raw.scale, [1,1,1]).map(n => clamp(n, .05, 50));
+      return { id: raw.id, type: raw.type, name: String(raw.name || `object-${index+1}`).slice(0,80), position: vector(raw.position, [0,1,0]), rotation: vector(raw.rotation, [0,0,0]), scale, color };
+    });
+    const version = typeof window !== 'undefined' && window.MDRStudioCore ? window.MDRStudioCore.VERSION : 3;
+    return { schema: 'mdr-scene', version, name: plan.theme === 'baghdad' ? 'بغداد · مشهد إجرائي' : `MDR · عالم ${String(plan.theme || 'إجرائي').slice(0,24)}`, objects };
   }
 
   // Renderer capability selection. WebView Three.js remains WebGL unless the renderer is explicitly built for WebGPU.
@@ -115,10 +141,10 @@
 
   function createDashboard() {
     if (typeof document === 'undefined' || document.getElementById('mdr-nextgen-panel')) return;
-    const panel=document.createElement('section'); panel.id='mdr-nextgen-panel'; panel.dir='rtl'; panel.innerHTML=`<style>#mdr-nextgen-panel{position:fixed;z-index:99999;bottom:76px;left:12px;width:min(370px,calc(100vw - 24px));max-height:72vh;overflow:auto;background:#10151ff2;color:#edf2fa;border:1px solid #ffffff24;border-radius:16px;padding:14px;font:13px/1.6 system-ui;box-shadow:0 16px 50px #0009;display:none}#mdr-nextgen-panel.open{display:block}#mdr-nextgen-panel h3{margin:0 0 8px;font-size:16px}#mdr-nextgen-panel .ng-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}#mdr-nextgen-panel button,#mdr-nextgen-panel select,#mdr-nextgen-panel input{min-height:40px;border-radius:9px;border:1px solid #ffffff24;background:#202938;color:#fff;padding:8px;font:inherit;min-width:0}#mdr-nextgen-panel button.primary{background:#d99a27;color:#17120a;font-weight:700}#mdr-nextgen-panel .ng-note{color:#aab7c8;font-size:11px;margin:8px 0}#mdr-nextgen-toggle{position:fixed;z-index:100000;bottom:14px;left:14px;border:1px solid #ffffff30;border-radius:99px;background:#d99a27;color:#17120a;padding:12px 16px;font-weight:800;box-shadow:0 6px 22px #0008}</style><h3>⚡ MDR NextGen · أنظمة تجريبية</h3><div class="ng-grid"><select id="ng-theme"><option value="forest">غابة</option><option value="desert">صحراء</option><option value="snow">ثلج</option><option value="alien">عالم فضائي</option></select><input id="ng-count" type="number" min="1" max="500" value="48" aria-label="عدد العناصر"><button class="primary" id="ng-generate">توليد عالم إجرائي</button><button id="ng-renderer">فحص الرسوميات</button><button id="ng-graph">اختبار البرمجة المرئية</button><button id="ng-stream">اختبار تحميل العالم</button><button id="ng-vehicle">محاكاة مركبة</button><button id="ng-multi">حالة اللعب الجماعي</button></div><p class="ng-note" id="ng-output">التوليد الإجرائي محلي. الذكاء الاصطناعي السحابي وخادم اللعب الجماعي يحتاجان مزوداً خارجياً.</p>`;
+    const panel=document.createElement('section'); panel.id='mdr-nextgen-panel'; panel.dir='rtl'; panel.innerHTML=`<style>#mdr-nextgen-panel{position:fixed;z-index:99999;bottom:76px;left:12px;width:min(370px,calc(100vw - 24px));max-height:72vh;overflow:auto;background:#10151ff2;color:#edf2fa;border:1px solid #ffffff24;border-radius:16px;padding:14px;font:13px/1.6 system-ui;box-shadow:0 16px 50px #0009;display:none}#mdr-nextgen-panel.open{display:block}#mdr-nextgen-panel h3{margin:0 0 8px;font-size:16px}#mdr-nextgen-panel .ng-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}#mdr-nextgen-panel button,#mdr-nextgen-panel select,#mdr-nextgen-panel input{min-height:40px;border-radius:9px;border:1px solid #ffffff24;background:#202938;color:#fff;padding:8px;font:inherit;min-width:0}#mdr-nextgen-panel button.primary{background:#d99a27;color:#17120a;font-weight:700}#mdr-nextgen-panel .ng-note{color:#aab7c8;font-size:11px;margin:8px 0}#mdr-nextgen-toggle{position:fixed;z-index:100000;bottom:14px;left:14px;border:1px solid #ffffff30;border-radius:99px;background:#d99a27;color:#17120a;padding:12px 16px;font-weight:800;box-shadow:0 6px 22px #0008}</style><h3>⚡ MDR NextGen · أنظمة تجريبية</h3><div class="ng-grid"><select id="ng-theme"><option value="forest">غابة</option><option value="desert">صحراء</option><option value="snow">ثلج</option><option value="alien">عالم فضائي</option><option value="baghdad">بغداد · طابوق ومشربيات</option></select><input id="ng-count" type="number" min="1" max="500" value="48" aria-label="عدد العناصر"><button class="primary" id="ng-generate">توليد وإضافة للمشهد</button><button id="ng-renderer">فحص الرسوميات</button><button id="ng-graph">اختبار البرمجة المرئية</button><button id="ng-stream">اختبار تحميل العالم</button><button id="ng-vehicle">محاكاة مركبة</button><button id="ng-multi">حالة اللعب الجماعي</button></div><p class="ng-note" id="ng-output">التوليد الإجرائي محلي. الذكاء الاصطناعي السحابي وخادم اللعب الجماعي يحتاجان مزوداً خارجياً.</p>`;
     const toggle=document.createElement('button');toggle.id='mdr-nextgen-toggle';toggle.textContent='MDR NextGen';toggle.onclick=()=>panel.classList.toggle('open');document.body.append(toggle,panel);
     const out=panel.querySelector('#ng-output');
-    panel.querySelector('#ng-generate').onclick=()=>{try{const plan=generateWorld({theme:panel.querySelector('#ng-theme').value,count:Number(panel.querySelector('#ng-count').value)}); const blob=new Blob([JSON.stringify(plan,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mdr-world-plan.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);out.textContent=`تم إنشاء مخطط ${plan.theme}: ${plan.objects.length} عنصر. نزّل JSON واستورده بعد تحويله إلى عناصر مشهد.`;}catch(e){out.textContent=e.message;}};
+    panel.querySelector('#ng-generate').onclick=async()=>{try{const plan=generateWorld({theme:panel.querySelector('#ng-theme').value,count:Number(panel.querySelector('#ng-count').value)});const project=toSceneProject(plan);if(window.MDRStudio&&typeof window.MDRStudio.importPackage==='function'){if(!window.confirm(`سيتم استبدال المشهد المفتوح بـ ${project.objects.length} عنصر. متابعة؟`))return;const result=await window.MDRStudio.importPackage(project,[]);out.textContent=`تم توليد ${project.name} وإضافته مباشرةً إلى المشهد (${result.objects} عنصر).`;return;}const blob=new Blob([JSON.stringify(project,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mdr-scene-procedural.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);out.textContent=`تم إنشاء مشروع ${project.name}: ${project.objects.length} عنصر. تم تنزيل ملف المشهد.`;}catch(e){out.textContent=e.message;}};
     panel.querySelector('#ng-renderer').onclick=()=>{const r=detectRenderer();out.textContent=`Renderer: ${r.preferred} · WebGPU: ${r.webgpu?'متاح':'غير متاح'} · WebGL2: ${r.webgl2?'متاح':'غير متاح'} · Texture: ${r.maxTextureSize}. Vulkan مباشر غير متاح في WebView.`;};
     panel.querySelector('#ng-graph').onclick=()=>{try{const r=runGraph({nodes:[{id:'a',type:'constant',value:6},{id:'b',type:'constant',value:7},{id:'c',type:'multiply'}],edges:[{from:'a',to:'c',input:'a'},{from:'b',to:'c',input:'b'}]});out.textContent=`Visual Scripting OK: 6 × 7 = ${r.results.c}`;}catch(e){out.textContent=e.message;}};
     panel.querySelector('#ng-stream').onclick=async()=>{const s=createWorldStreamer({chunkSize:64,maxActive:25});const r=await s.update([0,0,0],3);out.textContent=`World Streaming: ${r.active} chunks loaded within memory budget.`;};
@@ -126,5 +152,5 @@
     panel.querySelector('#ng-multi').onclick=()=>{out.textContent='Multiplayer transport جاهز للربط، لكنه يحتاج WebSocket relay URL وغرفة مستضافة. لا يوجد خادم مرفق.';};
   }
 
-  return Object.freeze({ generateWorld, detectRenderer, createAnimationController, createMultiplayer, runGraph, createWorldStreamer, stepVehicle, createDashboard });
+  return Object.freeze({ generateWorld, toSceneProject, detectRenderer, createAnimationController, createMultiplayer, runGraph, createWorldStreamer, stepVehicle, createDashboard });
 });

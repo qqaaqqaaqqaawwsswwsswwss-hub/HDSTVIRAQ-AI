@@ -51,3 +51,9 @@ A project is JSON with `schema: "mdr-scene"`, `version: 3`, `name`, and an `obje
 ## AI asset generation
 
 The Studio runtime loads `mdr-ai3d.js`, a provider adapter for Meshy's asynchronous Image-to-3D API. It validates local image input, creates a textured GLB task, polls status, and presents the resulting GLB URL. This is a provider-backed generation path, not an on-device AI model. The generated GLB can now be added to the scene when CORS allows a direct fetch; otherwise download and import it manually. A production deployment should route requests through a private backend to protect API credentials and handle provider CORS.
+
+## 3.1.0 hosted mobile additions
+- The web distribution publishes a standalone-capable Arabic RTL manifest and an origin-scoped service worker. The cache is versioned and contains only this app's static files; user project data remains in browser storage.
+- The Android WebView asset host explicitly skips PWA service-worker registration; the native host continues to use its local asset loader.
+- MDR NextGen's seeded Baghdad theme produces bounded primitive scene data and can import it through the existing MDR Studio package bridge after the user confirms replacing the open scene.
+- Regional open-source candidate review and license constraints are recorded in `OPEN_SOURCE_REVIEW.md`.
