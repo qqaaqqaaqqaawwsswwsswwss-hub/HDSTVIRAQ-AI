@@ -4,7 +4,7 @@
 
 ## تشغيل نسخة الويب محلياً
 
-يتطلب Node.js 18 أو أحدث. تبعيات npm مثبتة بإصدارات محددة في `package-lock.json`؛ `cannon-es` يُستخدم اختيارياً في Pro.
+يتطلب Node.js 18 أو أحدث. تبعيات npm مثبتة بإصدارات محددة في `package-lock.json`؛ `cannon-es` مضمّن اختيارياً ويُحمّل عند استخدام الفيزياء ثلاثية الأبعاد.
 
 ```sh
 npm run build:web
@@ -21,18 +21,17 @@ npm run verify
 
 يشغّل فحوصات المصدر واختبارات Node. هذه الاختبارات لا تعادل بناء Android أو اختباره على جهاز حقيقي.
 
-## نسختا APK
+## APK واحد
 
 يتطلب البناء JDK 17 وAndroid SDK Platform 35 وBuild Tools 35.0.0. سكربت `gradlew` المرفق مشغّل bootstrap مخصص يتحقق من SHA-256 لتنزيل Gradle 8.14.8، وليس Gradle Wrapper القياسي.
 
 ```sh
-./gradlew assembleStandardDebug assembleProDebug
+./gradlew assembleDebug
 ```
 
-- **Standard:** الإصدار القياسي بمحرك MDR الحالي.
-- **Pro:** يضيف محرك الفيزياء ثلاثي الأبعاد `cannon-es`، إصدار 0.20.0 بترخيص MIT، ويحمّله عند الطلب.
+- **MDR Platform:** تطبيق واحد يجمع محرر المشاهد ومصنع التطبيقات والفيزياء ثلاثية الأبعاد Cannon-es 0.20.0 بترخيص MIT، وتُحمّل مكتبة الفيزياء عند الطلب.
 
-المخرجات: `app/build/outputs/apk/standard/debug/app-standard-debug.apk` و`app/build/outputs/apk/pro/debug/app-pro-debug.apk`. كلاهما debug APK غير موقّع للنشر في Play Store. قالب البناء جاهز في `ci/android-apk.yml` لبناء النسختين كملفين منفصلين؛ تفعيله يتطلب إضافة الملف إلى `.github/workflows/` بعد منح اتصال GitHub صلاحية `workflows`.
+المخرج الوحيد: `app/build/outputs/apk/debug/app-debug.apk`. هو debug APK غير موقّع للنشر في Play Store. قالب البناء جاهز في `ci/android-apk.yml` لإنتاج APK واحد؛ تفعيله يتطلب إضافة الملف إلى `.github/workflows/` بعد منح اتصال GitHub صلاحية `workflows`.
 
 ## حقوق المكونات
 

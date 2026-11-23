@@ -29,7 +29,7 @@ test('offline cache and install prompt are local-only and are excluded from Andr
   execFileSync(process.execPath, ['--check', path.join(assets, 'sw.js')]);
 });
 
-test('offline precache includes the Pro physics runtime and pinned Cannon-es module', () => {
+test('offline precache includes the physics runtime and pinned Cannon-es module', () => {
   const worker = fs.readFileSync(path.join(assets, 'sw.js'), 'utf8');
   for (const file of ['mdr-cannon-loader.js', 'mdr-cannon-physics.mjs', 'cannon-es.mjs', 'mdr-edition.js']) {
     assert.ok(worker.includes(`'./${file}'`), `offline cache is missing ${file}`);

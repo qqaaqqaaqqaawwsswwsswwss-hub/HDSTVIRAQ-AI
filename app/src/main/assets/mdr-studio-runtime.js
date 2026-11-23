@@ -8,14 +8,14 @@
   let aiImage = null, aiController = null, aiModelUrl = null;
   const style = document.createElement("style");
   style.textContent = `
-  .mdr2-studio{position:absolute;z-index:40;top:12px;inset-inline-end:12px;width:min(300px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;padding:10px;border:1px solid #ffffff28;border-radius:14px;background:rgba(9,13,20,.93);backdrop-filter:blur(12px);color:#edf3fb;font:12px/1.5 system-ui,sans-serif;direction:rtl;box-shadow:0 12px 34px #0008}
+  .mdr2-studio{position:absolute;z-index:40;top:12px;inset-inline-end:12px;width:min(340px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;padding:10px;border:1px solid #ffffff28;border-radius:14px;background:rgba(9,13,20,.93);backdrop-filter:blur(12px);color:#edf3fb;font:12px/1.5 system-ui,sans-serif;direction:rtl;box-shadow:0 12px 34px #0008}
   .mdr2-studio *{box-sizing:border-box}.mdr2-studio-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-weight:800;color:#ffca68}
   .mdr2-studio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.mdr2-studio button,.mdr2-studio select{min-height:35px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;padding:6px 7px;font:600 11px system-ui;cursor:pointer}
   .mdr2-studio button:disabled{opacity:.5;cursor:wait}.mdr2-studio button.primary{background:#ffb020;color:#1b1509;border-color:#ffca68}.mdr2-studio .wide{grid-column:1/-1}
-  .mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
+  .mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
   .mdr2-ai,.mdr2-assets{border-top:1px solid #ffffff24;margin-top:9px;padding-top:8px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{width:100%;max-width:100%;margin:5px 0;color:#dce6f4;font:10px system-ui}
   .mdr2-ai .ai-preview{display:none;width:100%;max-height:110px;object-fit:contain;border-radius:8px;background:#101722;margin:5px 0}.mdr2-ai .ai-note,.mdr2-assets .asset-note{font-size:9px;color:#aab9cc;line-height:1.5}.mdr2-ai button,.mdr2-assets button{width:100%;margin-top:5px}.mdr2-ai .ai-result{display:none;color:#a9e7b5;overflow-wrap:anywhere;font-size:10px}
-  @media(max-width:720px){.mdr2-studio{top:8px;inset-inline-end:8px;width:205px;padding:7px}.mdr2-studio button,.mdr2-studio select{min-height:33px;padding:5px 3px;font-size:10px}}
+  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
   `;
   document.head.appendChild(style);
 
@@ -49,6 +49,7 @@
       option.textContent = (object.userData.mdrType === "glb" ? "🧊 " : "◻ ") + object.name; select.appendChild(option);
     }
     select.value = selectedId || "";
+    const count = panel.querySelector(".dock-count"); if (count) count.textContent = objects.length + " عنصر";
   }
   function updateSelection() {
     if (!panel) return;
@@ -282,9 +283,10 @@
     frame.style.position = "relative";
     panel = document.createElement("section"); panel.className = "mdr2-studio";
     panel.innerHTML = `
-      <div class="mdr2-studio-head"><span>🧰 MDR Studio 2.5</span><button type="button" data-action="collapse">طي</button></div>
-      <div class="selected-label">لا يوجد عنصر محدد</div>
-      <select class="selected mdr2-object-list" aria-label="اختيار عنصر"></select>
+      <div class="mdr2-studio-head"><span>🧰 محرر المشهد · MDR</span><button type="button" data-action="collapse">طي</button></div>
+      <div class="dock-label"><span>شجرة المشهد</span><span class="dock-count">0 عنصر</span></div>
+      <select class="selected mdr2-object-list" aria-label="شجرة المشهد واختيار العنصر"></select>
+      <div class="dock-label"><span>المفتش · تحويل العنصر</span><span class="selected-label">لم يُحدد عنصر</span></div>
       <div class="mdr2-studio-grid">
         <button class="primary" data-add="box">＋ مكعب</button><button data-add="sphere">＋ كرة</button><button data-add="cylinder">＋ أسطوانة</button>
         <button class="wide" data-add="directionalLight">＋ ضوء اتجاهي</button>

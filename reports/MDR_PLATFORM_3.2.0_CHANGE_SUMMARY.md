@@ -1,7 +1,7 @@
 # MDR Platform 3.2.0 — Change Summary
 
-- Added Standard and Pro Android APK variants, configured as separate outputs in the prepared workflow template at `ci/android-apk.yml`.
-- Integrated the pinned MIT-licensed Cannon-es 0.20.0 package as an optional Pro physics backend.
-- Added collision notifications, body state/impulse APIs, bounded body count, fixed-step simulation and Three.js transform binding.
-- Kept the base engine and app factory intact; Cannon code is loaded only when the Pro tool is invoked.
-- Updated release metadata to 3.2.0 / versionCode 17.
+- Consolidated Android distribution to one APK and one application ID.
+- Integrated the formerly edition-gated Cannon-es 0.20.0 physics tool into the unified app.
+- Improved touch editor layout with a mobile scene dock, scene hierarchy count, inspector status, and larger tap targets.
+- Kept project factory, local scene persistence, primitive editing, GLB asset import, and exports in the same app.
+- Prepared single-APK CI build template at `ci/android-apk.yml`; activation awaits workflow-write permission.

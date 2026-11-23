@@ -14,5 +14,5 @@ New dependencies are only added after checking the upstream source, exact versio
 
 ## Licensed engine component integrated in 3.2.0
 
-- [pmndrs/cannon-es](https://github.com/pmndrs/cannon-es), version 0.20.0, distributed from npm as `cannon-es` under the MIT license. The exact license text is included at `third_party/CANNON-ES-LICENSE`. The adapter is isolated in `mdr-cannon-physics.mjs` and lazy-loaded by the Pro edition; it is not copied into Standard-specific source overrides.
+- [pmndrs/cannon-es](https://github.com/pmndrs/cannon-es), version 0.20.0, distributed from npm as `cannon-es` under the MIT license. The exact license text is included at `third_party/CANNON-ES-LICENSE`. The adapter is isolated in `mdr-cannon-physics.mjs` and lazy-loaded when physics is invoked in the single unified edition.
 - This is a technically suitable open-source project, but it is not represented as Middle-East-origin. The regional candidate above was not integrated because GitHub reports no asserted license.

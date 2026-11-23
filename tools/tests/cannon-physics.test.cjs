@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const apiPromise = import('../../app/src/main/assets/mdr-cannon-physics.mjs');
 
-test('Pro Cannon-es world settles a dynamic sphere on a static floor', async () => {
+test('Cannon-es world settles a dynamic sphere on a static floor', async () => {
   const { createCannonWorld } = await apiPromise;
   const sim = createCannonWorld();
   sim.createBox({ id: 'floor', halfExtents: [5, .5, 5], position: [0, -.5, 0], mass: 0 });
@@ -51,7 +51,7 @@ test('Cannon-es binds Three-style transforms and emits contact notifications', a
   sim.dispose();
 });
 
-test('vendored Pro physics records the pinned MIT source and license', () => {
+test('vendored physics records the pinned MIT source and license', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
   const license = fs.readFileSync(path.join(root, 'third_party/CANNON-ES-LICENSE'), 'utf8');
   assert.equal(pkg.dependencies['cannon-es'], '0.20.0');
@@ -60,14 +60,12 @@ test('vendored Pro physics records the pinned MIT source and license', () => {
   assert.ok(fs.existsSync(path.join(root, 'app/src/main/assets/mdr-cannon-physics.mjs')));
 });
 
-test('two Android APK flavors are distinct and Pro is the only variant enabling Cannon physics', () => {
+test('single Android APK includes Cannon physics with no edition gate', () => {
   const gradle = fs.readFileSync(path.join(root, 'app/build.gradle'), 'utf8');
-  const standard = fs.readFileSync(path.join(root, 'app/src/standard/assets/mdr-edition.js'), 'utf8');
-  const pro = fs.readFileSync(path.join(root, 'app/src/pro/assets/mdr-edition.js'), 'utf8');
-  const html = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
-  assert.match(gradle, /standard\s*\{[\s\S]*?applicationIdSuffix '\.standard'/);
-  assert.match(gradle, /pro\s*\{[\s\S]*?applicationIdSuffix '\.pro'/);
-  assert.match(standard, /MDR_EDITION = "standard"/);
-  assert.match(pro, /MDR_EDITION = "pro"/);
-  assert.match(html, /src="mdr-cannon-loader\.js"/);
+  const edition = fs.readFileSync(path.join(root, 'app/src/main/assets/mdr-edition.js'), 'utf8');
+  const loader = fs.readFileSync(path.join(root, 'app/src/main/assets/mdr-cannon-loader.js'), 'utf8');
+  assert.doesNotMatch(gradle, /productFlavors|flavorDimensions/);
+  assert.match(gradle, /applicationId 'com\.mdr\.app'/);
+  assert.match(edition, /MDR_EDITION = "standard"/);
+  assert.doesNotMatch(loader, /Pro APK only|MDR_EDITION !==/);
 });

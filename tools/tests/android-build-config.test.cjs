@@ -23,8 +23,6 @@ test('Android app version and displayed label are consistent', () => {
   const strings = read('app/src/main/res/values/strings.xml');
   assert.match(gradle, /versionName\s+"3\.2\.0"/);
   assert.match(gradle, /versionCode\s+17/);
-  assert.match(gradle, /standard\s*\{[\s\S]*?applicationIdSuffix '\.standard'/);
-  assert.match(gradle, /pro\s*\{[\s\S]*?applicationIdSuffix '\.pro'/);
   assert.match(strings, /MDR Platform 3\.2\.0/);
 });
 
@@ -73,10 +71,18 @@ test('Android WebView serves local ES modules with a JavaScript MIME type', () =
 });
 
 
-test('Android debug flavors have unique application IDs and edition labels', () => {
+test('Android has one application ID with physics in the single edition', () => {
   const gradle = read('app/build.gradle');
-  assert.match(gradle, /applicationIdSuffix '\.standard'/);
-  assert.match(gradle, /applicationIdSuffix '\.pro'/);
-  assert.match(read('app/src/standard/assets/mdr-edition.js'), /MDR_EDITION = "standard"/);
-  assert.match(read('app/src/pro/assets/mdr-edition.js'), /MDR_EDITION = "pro"/);
+  assert.match(gradle, /applicationId 'com\.mdr\.app'/);
+  assert.doesNotMatch(gradle, /productFlavors|flavorDimensions/);
+  assert.match(read('app/src/main/assets/mdr-cannon-loader.js'), /import\('\.\/mdr-cannon-physics\.mjs'\)/);
+  assert.match(read('app/src/main/assets/mdr-nextgen.js'), /proPhysicsButton\.style\.display='block'/);
+});
+
+test('mobile scene editor presents a touch-sized scene dock and inspector', () => {
+  const runtime = read('app/src/main/assets/mdr-studio-runtime.js');
+  assert.match(runtime, /شجرة المشهد/);
+  assert.match(runtime, /المفتش · تحويل العنصر/);
+  assert.match(runtime, /max-height:min\(46vh,420px\)/);
+  assert.match(runtime, /min-height:42px/);
 });

@@ -14,21 +14,8 @@ android {
         // AGP 8 disables BuildConfig generation by default. AppActivity uses BuildConfig.DEBUG.
         buildConfig true
     }
-    flavorDimensions += 'edition'
-    productFlavors {
-        standard {
-            dimension 'edition'
-            applicationIdSuffix '.standard'
-            versionNameSuffix '-standard'
-        }
-        pro {
-            dimension 'edition'
-            applicationIdSuffix '.pro'
-            versionNameSuffix '-pro'
-        }
-    }
     buildTypes {
-        debug { applicationIdSuffix ".debug" }
+        debug { }
         release { minifyEnabled false; shrinkResources false }
     }
     compileOptions {

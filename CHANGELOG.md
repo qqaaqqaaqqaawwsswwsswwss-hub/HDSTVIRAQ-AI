@@ -1,12 +1,12 @@
 # MDR Platform — Changelog
 
-## 3.2.0 — Standard + Pro engine editions
+## 3.2.0 — Unified Android game editor
 
-- Added two Android product flavors: Standard and Pro, with distinct application IDs and APK artifacts.
-- Added optional Cannon-es 0.20.0 3D physics to Pro (MIT, upstream source and bundled license recorded); it loads only when the Pro physics tool is selected.
-- Added fixed-step dynamics, shape/body creation, impulses, collisions, transform binding, and bounded world lifecycle for Pro physics.
-- Kept the existing MDR physics adapter as the Standard/default web engine, with an Arabic Baghdad procedural scene flow.
-- Advanced Android metadata to 3.2.0 / versionCode 17 and prepared the two-APK GitHub Actions workflow at `ci/android-apk.yml`; activation awaits workflow-write permission.
+- Consolidated Android delivery to a single APK; all editor and physics features are included in the one app.
+- Added optional Cannon-es 0.20.0 3D physics (MIT, upstream source and bundled license recorded); it loads only when the physics tool is selected.
+- Added fixed-step dynamics, shape/body creation, impulses, collisions, transform binding, and bounded world lifecycle for the integrated physics system.
+- Kept the existing MDR physics adapter as the default engine, with an Arabic Baghdad procedural scene flow.
+- Advanced Android metadata to 3.2.0 / versionCode 17 and prepared the single-APK GitHub Actions workflow at `ci/android-apk.yml`; activation awaits workflow-write permission.
 
 ## 3.0.3 — Mobile and Web release
 

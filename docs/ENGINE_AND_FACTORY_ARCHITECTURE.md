@@ -59,7 +59,7 @@ The Studio runtime loads `mdr-ai3d.js`, a provider adapter for Meshy's asynchron
 - Regional open-source candidate review and license constraints are recorded in `OPEN_SOURCE_REVIEW.md`.
 
 
-## 3.2.0 optional Pro physics
-- Standard and Pro are separate Android product flavors with application-id suffixes; their release artifacts can be installed side-by-side.
-- Pro lazy-loads the MIT-licensed Cannon-es JavaScript physics runtime; the MIT notice is retained in the repository. The adapter caps bodies and simulation delta, exposes a fixed-step world, contacts, impulse helpers, and transforms bound to Three-style meshes.
-- Standard retains MDR's original dependency-light physics path. `MDR_EDITION` is selected by Gradle source-set assets; the hosted web build defaults to Pro.
+## 3.2.0 unified Android editor
+- Android now ships one application ID and one APK. Game-scene editing, app factory and the advanced physics backend are parts of the same app.
+- The unified app lazy-loads the MIT-licensed Cannon-es JavaScript physics runtime; the MIT notice is retained in the repository. The adapter caps bodies and simulation delta, exposes a fixed-step world, contacts, impulse helpers, and transforms bound to Three-style meshes.
+- MDR retains its original lightweight physics path as a fallback. Cannon is available from the physics tool in the unified Android APK and hosted web build.

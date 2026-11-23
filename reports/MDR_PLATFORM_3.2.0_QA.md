@@ -1,12 +1,12 @@
-# MDR Platform 3.2.0 — Standard + Pro QA
+# MDR Platform 3.2.0 — محرر موحّد
 
-## Changes
-- Standard and Pro Android product flavors have separate application IDs and version suffixes.
-- Pro adds optional Cannon-es 0.20.0 3D rigid-body physics: static/dynamic/kinematic box and sphere bodies, impulses, contacts, fixed-step stepping, Three-style mesh binding, cleanup and body limits.
-- Cannon is lazy-loaded from the Pro dashboard and the MIT license is included in `third_party/`.
-- Standard remains on the existing MDR physics implementation; the hosted web app uses the Pro edition by default.
+## المخرج والميزات
+- مخرج Android واحد فقط بهوية تطبيق واحدة؛ لا توجد نكهتا Standard وPro.
+- محرر مشهد داخل التطبيق بأسلوب سير عمل محررات الألعاب على Android: نافذة مشهد تفاعلية، شجرة عناصر، مفتش للتحويلات، وأدوات إضافة/حذف/استيراد وتصدير.
+- مصنع التطبيقات، حفظ المشاهد محلياً، استيراد GLB، ومزايا الفيزياء MDR وCannon-es 0.20.0 متاحة ضمن التطبيق نفسه.
+- مكتبة Cannon-es مرخصة MIT، مضمّنة وتُحمّل عند طلب الفيزياء؛ يتضمن المستودع نص الترخيص.
 
-## Verification
-- Source and Node suites pass locally; the GitHub Actions build recipe is in `ci/android-apk.yml` but is not active until workflow-write permission is granted.
-- The local sandbox has no JDK or Android SDK, so APK assembly cannot run here.
-- Physical installation/performance on Android devices is not verified until the CI artifacts are installed and tested.
+## التحقق والحدود
+- `npm run build:pages` و`npm run verify` اجتازا؛ 103 اختبارات ناجحة.
+- APK الفعلي لم يُبنَ بعد: JDK/Android SDK غير متاحين في البيئة، ورفع workflow إلى GitHub يتطلب صلاحية workflows. قالب البناء الأحادي موجود في `ci/android-apk.yml`.
+- لم يُختبر التطبيق على جهاز Android. المحرك ما زال في طور التطوير، لذلك «الأفضل في الشرق الأوسط» هدف طموح وليس ادعاءً مثبتاً.

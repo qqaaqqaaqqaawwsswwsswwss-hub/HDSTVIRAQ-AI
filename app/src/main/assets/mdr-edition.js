@@ -1,1 +1,1 @@
-window.MDR_EDITION = "pro";
+window.MDR_EDITION = "standard";
