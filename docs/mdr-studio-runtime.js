@@ -12,10 +12,10 @@
   .mdr2-studio *{box-sizing:border-box}.mdr2-studio-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-weight:800;color:#ffca68}
   .mdr2-studio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.mdr2-studio button,.mdr2-studio select{min-height:35px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;padding:6px 7px;font:600 11px system-ui;cursor:pointer}
   .mdr2-studio button:disabled{opacity:.5;cursor:wait}.mdr2-studio button.primary{background:#ffb020;color:#1b1509;border-color:#ffca68}.mdr2-studio .wide{grid-column:1/-1}
-  .mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
+  .mdr2-studio .scene-tree{display:grid;gap:3px;max-height:124px;overflow:auto;padding:2px;border:1px solid #ffffff12;border-radius:9px;background:#090d14}.mdr2-studio .scene-node{display:flex;align-items:center;gap:8px;width:100%;min-height:34px!important;text-align:right!important;background:transparent!important;border-color:transparent!important;color:#cbd6e6!important;font-weight:600!important}.mdr2-studio .scene-node[aria-pressed="true"]{background:#ffb02020!important;border-color:#ffb02065!important;color:#ffcf78!important}.mdr2-studio .scene-node-icon{width:20px;text-align:center}.mdr2-studio .inspector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.mdr2-studio .inspector-field{min-width:0;color:#9fb0c6;font-size:9px}.mdr2-studio .inspector-field span{display:block;margin:0 3px 3px}.mdr2-studio .inspector-field input{width:100%;min-width:0;min-height:38px;border:1px solid #ffffff20;border-radius:7px;background:#111824;color:#f2f5fa;padding:5px;text-align:center;direction:ltr;font:12px ui-monospace,monospace}.mdr2-studio .inspector-field input:disabled{opacity:.45}.mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
   .mdr2-ai,.mdr2-assets{border-top:1px solid #ffffff24;margin-top:9px;padding-top:8px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{width:100%;max-width:100%;margin:5px 0;color:#dce6f4;font:10px system-ui}
   .mdr2-ai .ai-preview{display:none;width:100%;max-height:110px;object-fit:contain;border-radius:8px;background:#101722;margin:5px 0}.mdr2-ai .ai-note,.mdr2-assets .asset-note{font-size:9px;color:#aab9cc;line-height:1.5}.mdr2-ai button,.mdr2-assets button{width:100%;margin-top:5px}.mdr2-ai .ai-result{display:none;color:#a9e7b5;overflow-wrap:anywhere;font-size:10px}
-  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
+  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .inspector-field input{min-height:42px;font-size:13px}.mdr2-studio .scene-tree{max-height:100px}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
   `;
   document.head.appendChild(style);
 
@@ -40,23 +40,33 @@
   }
   function refreshList() {
     if (!panel) return;
-    const select = panel.querySelector(".mdr2-object-list");
-    if (!select) return;
-    select.innerHTML = "";
-    const empty = document.createElement("option"); empty.value = ""; empty.textContent = "اختر عنصراً للتحرير"; select.appendChild(empty);
+    const tree = panel.querySelector(".scene-tree");
+    if (!tree) return;
+    tree.replaceChildren();
     for (const object of objects) {
-      const option = document.createElement("option"); option.value = object.userData.mdrId;
-      option.textContent = (object.userData.mdrType === "glb" ? "🧊 " : "◻ ") + object.name; select.appendChild(option);
+      const row = document.createElement("button"); row.type = "button"; row.className = "scene-node";
+      row.dataset.selectObject = object.userData.mdrId; row.setAttribute("role", "treeitem");
+      row.setAttribute("aria-pressed", String(object.userData.mdrId === selectedId));
+      const icon = document.createElement("span"); icon.className = "scene-node-icon";
+      icon.textContent = object.userData.mdrType === "glb" ? "🧊" : object.userData.mdrType === "directionalLight" ? "☼" : "◻";
+      const name = document.createElement("span"); name.textContent = object.name || object.userData.mdrType || "عنصر";
+      row.append(icon, name); tree.appendChild(row);
     }
-    select.value = selectedId || "";
     const count = panel.querySelector(".dock-count"); if (count) count.textContent = objects.length + " عنصر";
   }
   function updateSelection() {
     if (!panel) return;
     const object = selected();
     const label = panel.querySelector(".selected-label");
-    if (label) label.textContent = object ? "العنصر المحدد: " + object.name : "لا يوجد عنصر محدد";
+    if (label) label.textContent = object ? object.name : "لم يُحدد عنصر";
     refreshList();
+    const fields = panel.querySelectorAll("[data-inspector]");
+    fields.forEach(field => {
+      const [axis, component] = field.dataset.inspector.split("-");
+      const value = object ? axis === "position" ? object.position[component] : axis === "rotation" ? object.rotation[component] * 180 / Math.PI : object.scale[component] : null;
+      field.value = value == null ? "" : String(Math.round(value * 100) / 100);
+      field.disabled = !object;
+    });
   }
   function addPrimitive(type, data = {}) {
     if (!active || typeof active.editorAddPrimitive !== "function") throw new Error("جسر محرر MDR غير متاح لهذا المحرك");
@@ -258,6 +268,7 @@
     if (action === "z-") object.position.z -= 1; if (action === "z+") object.position.z += 1;
     if (action === "rotate") object.rotation.y += Math.PI / 12;
     if (action === "scale+") object.scale.multiplyScalar(1.1); if (action === "scale-") object.scale.multiplyScalar(.9);
+    updateSelection();
     say("تم تعديل " + object.name);
   }
   function remove() {
@@ -285,8 +296,11 @@
     panel.innerHTML = `
       <div class="mdr2-studio-head"><span>🧰 محرر المشهد · MDR</span><button type="button" data-action="collapse">طي</button></div>
       <div class="dock-label"><span>شجرة المشهد</span><span class="dock-count">0 عنصر</span></div>
-      <select class="selected mdr2-object-list" aria-label="شجرة المشهد واختيار العنصر"></select>
+      <div class="scene-tree" role="tree" aria-label="عناصر المشهد"></div>
       <div class="dock-label"><span>المفتش · تحويل العنصر</span><span class="selected-label">لم يُحدد عنصر</span></div>
+      <div class="inspector-grid" aria-label="تحويلات العنصر">
+        ${["position","rotation","scale"].map(axis => ["x","y","z"].map(component => `<label class="inspector-field"><span>${axis === "position" ? "موقع" : axis === "rotation" ? "دوران°" : "قياس"} ${component.toUpperCase()}</span><input type="number" step="0.1" data-inspector="${axis}-${component}" aria-label="${axis} ${component}" disabled></label>`).join("")).join("")}
+      </div>
       <div class="mdr2-studio-grid">
         <button class="primary" data-add="box">＋ مكعب</button><button data-add="sphere">＋ كرة</button><button data-add="cylinder">＋ أسطوانة</button>
         <button class="wide" data-add="directionalLight">＋ ضوء اتجاهي</button>
@@ -313,12 +327,28 @@
       <div class="status status-main">جاهز — أضف مجسماً أو استورد GLB</div>`;
     frame.appendChild(panel); refreshList();
     panel.addEventListener("change", event => {
-      if (event.target.matches(".mdr2-object-list")) { selectedId = event.target.value || null; updateSelection(); }
-      else if (event.target.matches(".ai-file")) chooseAIImage(event.target.files && event.target.files[0]);
+      if (event.target.matches(".ai-file")) chooseAIImage(event.target.files && event.target.files[0]);
+    });
+    panel.addEventListener("input", event => {
+      const field = event.target.closest("[data-inspector]");
+      const object = selected();
+      if (!field || !object) return;
+      const value = Number(field.value);
+      if (!Number.isFinite(value)) return;
+      const [axis, component] = field.dataset.inspector.split("-");
+      if (axis === "position") {
+        const next = object.position.toArray(); next["xyz".indexOf(component)] = Math.max(-500, Math.min(500, value)); object.position.fromArray(next);
+      } else if (axis === "rotation") {
+        const next = object.rotation.toArray().slice(0, 3); next["xyz".indexOf(component)] = Math.max(-3600, Math.min(3600, value)) * Math.PI / 180; object.rotation.set(next[0], next[1], next[2]);
+      } else if (axis === "scale") {
+        const next = object.scale.toArray(); next["xyz".indexOf(component)] = Math.max(.05, Math.min(50, value)); object.scale.fromArray(next);
+      }
+      say("تم تحديث " + object.name);
     });
     panel.addEventListener("click", event => {
       const button = event.target.closest("button"); if (!button) return;
-      if (button.dataset.add) { try { addPrimitive(button.dataset.add); } catch (error) { say(error.message, true); } }
+      if (button.dataset.selectObject) { selectedId = button.dataset.selectObject; updateSelection(); }
+      else if (button.dataset.add) { try { addPrimitive(button.dataset.add); } catch (error) { say(error.message, true); } }
       else if (button.dataset.transform) transform(button.dataset.transform);
       else if (button.dataset.action === "save") save();
       else if (button.dataset.action === "load") load();
@@ -342,8 +372,8 @@
       else if (button.dataset.action === "ai-download") downloadAI3D();
       else if (button.dataset.action === "ai-load") loadAI3D();
       else if (button.dataset.action === "collapse") {
-        const grid = panel.querySelector(".mdr2-studio-grid"), list = panel.querySelector(".mdr2-object-list");
-        const hide = grid.style.display !== "none"; grid.style.display = hide ? "none" : "grid"; list.style.display = hide ? "none" : "block";
+        const grid = panel.querySelector(".mdr2-studio-grid"), tree = panel.querySelector(".scene-tree"), inspector = panel.querySelector(".inspector-grid");
+        const hide = grid.style.display !== "none"; grid.style.display = hide ? "none" : "grid"; tree.style.display = hide ? "none" : "grid"; inspector.style.display = hide ? "none" : "grid";
       }
     });
   }

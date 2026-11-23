@@ -83,6 +83,11 @@ test('mobile scene editor presents a touch-sized scene dock and inspector', () =
   const runtime = read('app/src/main/assets/mdr-studio-runtime.js');
   assert.match(runtime, /شجرة المشهد/);
   assert.match(runtime, /المفتش · تحويل العنصر/);
+  assert.match(runtime, /row\.dataset\.selectObject/);
+  assert.match(runtime, /data-inspector="\$\{axis\}-\$\{component\}"/);
+  assert.match(runtime, /object\.position\.fromArray\(next\)/);
+  assert.match(runtime, /object\.rotation\.set\(next\[0\], next\[1\], next\[2\]\)/);
+  assert.match(runtime, /object\.scale\.fromArray\(next\)/);
   assert.match(runtime, /max-height:min\(46vh,420px\)/);
   assert.match(runtime, /min-height:42px/);
 });
