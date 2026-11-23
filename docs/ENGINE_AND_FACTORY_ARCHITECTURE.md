@@ -19,6 +19,7 @@
 - MDR Studio lifecycle is connected through `mdr2:world-ready` and `mdr2:world-destroy` events.
 - The `PT.editorAddPrimitive(type, spec)` bridge creates editor primitives using the bundled Three.js constructors. The 2.3.0 `PT.editorThreeAPI()` bridge exposes only Group, Mesh, BufferGeometry, Float32BufferAttribute, MeshStandardMaterial, Texture, Color and Matrix4 constructors to the GLB adapter. This avoids exposing the full internal Three.js namespace.
 - Editor objects supported: box, sphere, cylinder, directional light and GLB model roots. The runtime maintains its own collection rather than assuming the game world has a `sceneObjects` property.
+- Scene data can persist optional validated physics settings per object (static, dynamic or kinematic; box/sphere collider; bounded mass, friction and restitution). The editor's physics test adds those bodies to the engine world, locks editing while running, and restores saved transforms when stopped.
 - Object selection uses an editor dropdown; transforms include X/Z movement, Y rotation and uniform scale.
 
 ## Scene data format

@@ -24,6 +24,18 @@
     const item = { id: String(input.id || fallbackId || ""), type, name: String(input.name || type).slice(0, 80),
       position: vector(input.position, [0, 1, 0], -500, 500), rotation: vector(input.rotation, [0, 0, 0], -Math.PI * 100, Math.PI * 100),
       scale: vector(input.scale, [1, 1, 1], 0.05, 50), color: /^#[0-9a-f]{6}$/i.test(input.color || "") ? input.color : "#8da9c4" };
+    if (input.physics !== undefined && input.physics !== null) {
+      const physics = input.physics;
+      if (!physics || typeof physics !== "object" || Array.isArray(physics)) throw new Error("Invalid physics body settings");
+      const bodyType = String(physics.type || "dynamic");
+      const shape = String(physics.shape || (type === "sphere" ? "sphere" : "box"));
+      if (!["static", "dynamic", "kinematic"].includes(bodyType) || !["box", "sphere"].includes(shape)) throw new Error("Invalid physics body type or shape");
+      const mass = physics.mass === undefined ? 1 : physics.mass;
+      const friction = physics.friction === undefined ? 0.65 : physics.friction;
+      const restitution = physics.restitution === undefined ? 0.08 : physics.restitution;
+      if (![mass, friction, restitution].every(finite)) throw new Error("Physics values must be finite numbers");
+      item.physics = { type: bodyType, shape, mass: clamp(mass, 0.001, 10000), friction: clamp(friction, 0, 1), restitution: clamp(restitution, 0, 1) };
+    }
     if (type === "glb") {
       const assetId = String(input.assetId || "");
       if (!/^asset-[a-z0-9-]{4,90}$/i.test(assetId)) throw new Error("Invalid GLB asset ID");

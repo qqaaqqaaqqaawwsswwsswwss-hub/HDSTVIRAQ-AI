@@ -26,6 +26,17 @@ test('clamps transform values and rejects duplicate IDs', () => {
   assert.throws(() => Core.validateProject(project), /duplicate/);
 });
 
+test('scene projects persist bounded physics body settings safely', () => {
+  const project = Core.createProject('Physics test');
+  project.objects.push(Core.normalizeObject({ id:'ball', type:'sphere', physics:{ type:'dynamic', mass:2.5, friction:0.4, restitution:0.3 } }));
+  const body = Core.parse(Core.serialize(project)).objects[0].physics;
+  assert.deepEqual(body, { type:'dynamic', shape:'sphere', mass:2.5, friction:0.4, restitution:0.3 });
+  const clamped = Core.normalizeObject({ id:'ground', type:'box', physics:{ type:'static', mass:0, friction:4, restitution:-1 } }).physics;
+  assert.deepEqual(clamped, { type:'static', shape:'box', mass:0.001, friction:1, restitution:0 });
+  assert.throws(() => Core.normalizeObject({ id:'bad', type:'box', physics:{ type:'ghost' } }), /physics body type/);
+  assert.throws(() => Core.normalizeObject({ id:'bad-mass', type:'box', physics:{ type:'dynamic', mass:NaN } }), /finite/);
+});
+
 test('rejects too many objects and oversized or invalid JSON', () => {
   const project = Core.createProject();
   project.objects = Array.from({length: Core.MAX_OBJECTS + 1}, (_, i) => ({ id:`o${i}`, type:'box' }));

@@ -5,6 +5,7 @@
   if (!Core) return;
   const KEY = "mdr.studio.project.v3";
   let active = null, panel = null, selectedId = null, objects = [];
+  let physicsBodies = new Map();
   let aiImage = null, aiController = null, aiModelUrl = null;
   const style = document.createElement("style");
   style.textContent = `
@@ -12,10 +13,10 @@
   .mdr2-studio *{box-sizing:border-box}.mdr2-studio-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-weight:800;color:#ffca68}
   .mdr2-studio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.mdr2-studio button,.mdr2-studio select{min-height:35px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;padding:6px 7px;font:600 11px system-ui;cursor:pointer}
   .mdr2-studio button:disabled{opacity:.5;cursor:wait}.mdr2-studio button.primary{background:#ffb020;color:#1b1509;border-color:#ffca68}.mdr2-studio .wide{grid-column:1/-1}
-  .mdr2-studio .scene-tree{display:grid;gap:3px;max-height:124px;overflow:auto;padding:2px;border:1px solid #ffffff12;border-radius:9px;background:#090d14}.mdr2-studio .scene-node{display:flex;align-items:center;gap:8px;width:100%;min-height:34px!important;text-align:right!important;background:transparent!important;border-color:transparent!important;color:#cbd6e6!important;font-weight:600!important}.mdr2-studio .scene-node[aria-pressed="true"]{background:#ffb02020!important;border-color:#ffb02065!important;color:#ffcf78!important}.mdr2-studio .scene-node-icon{width:20px;text-align:center}.mdr2-studio .inspector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.mdr2-studio .inspector-field{min-width:0;color:#9fb0c6;font-size:9px}.mdr2-studio .inspector-field span{display:block;margin:0 3px 3px}.mdr2-studio .inspector-field input{width:100%;min-width:0;min-height:38px;border:1px solid #ffffff20;border-radius:7px;background:#111824;color:#f2f5fa;padding:5px;text-align:center;direction:ltr;font:12px ui-monospace,monospace}.mdr2-studio .inspector-field input:disabled{opacity:.45}.mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
+  .mdr2-studio .scene-tree{display:grid;gap:3px;max-height:124px;overflow:auto;padding:2px;border:1px solid #ffffff12;border-radius:9px;background:#090d14}.mdr2-studio .scene-node{display:flex;align-items:center;gap:8px;width:100%;min-height:34px!important;text-align:right!important;background:transparent!important;border-color:transparent!important;color:#cbd6e6!important;font-weight:600!important}.mdr2-studio .scene-node[aria-pressed="true"]{background:#ffb02020!important;border-color:#ffb02065!important;color:#ffcf78!important}.mdr2-studio .scene-node-icon{width:20px;text-align:center}.mdr2-studio .physics-setting{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:7px 9px;border:1px solid #ffffff16;border-radius:9px;background:#111824;color:#a9b9cc;font-size:11px}.mdr2-studio .physics-setting select,.mdr2-studio .physics-setting input{min-height:36px;max-width:145px;padding:5px 10px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;font:600 11px system-ui}.mdr2-studio .physics-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}.mdr2-studio .physics-actions button{min-height:40px}.mdr2-studio.physics-running{border-color:#35e0a1aa;box-shadow:0 0 0 1px #35e0a122,0 12px 34px #0008}.mdr2-studio .inspector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.mdr2-studio .inspector-field{min-width:0;color:#9fb0c6;font-size:9px}.mdr2-studio .inspector-field span{display:block;margin:0 3px 3px}.mdr2-studio .inspector-field input{width:100%;min-width:0;min-height:38px;border:1px solid #ffffff20;border-radius:7px;background:#111824;color:#f2f5fa;padding:5px;text-align:center;direction:ltr;font:12px ui-monospace,monospace}.mdr2-studio .inspector-field input:disabled{opacity:.45}.mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
   .mdr2-ai,.mdr2-assets{border-top:1px solid #ffffff24;margin-top:9px;padding-top:8px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{width:100%;max-width:100%;margin:5px 0;color:#dce6f4;font:10px system-ui}
   .mdr2-ai .ai-preview{display:none;width:100%;max-height:110px;object-fit:contain;border-radius:8px;background:#101722;margin:5px 0}.mdr2-ai .ai-note,.mdr2-assets .asset-note{font-size:9px;color:#aab9cc;line-height:1.5}.mdr2-ai button,.mdr2-assets button{width:100%;margin-top:5px}.mdr2-ai .ai-result{display:none;color:#a9e7b5;overflow-wrap:anywhere;font-size:10px}
-  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .inspector-field input{min-height:42px;font-size:13px}.mdr2-studio .scene-tree{max-height:100px}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
+  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .inspector-field input{min-height:42px;font-size:13px}.mdr2-studio .physics-setting select,.mdr2-studio .physics-actions button{min-height:44px}.mdr2-studio .scene-tree{max-height:100px}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
   `;
   document.head.appendChild(style);
 
@@ -32,6 +33,7 @@
     const spec = { id: object.userData.mdrId, type: object.userData.mdrType, name: object.name,
       position: object.position.toArray(), rotation: object.rotation.toArray().slice(0, 3),
       scale: object.scale.toArray(), color: object.userData.mdrColor || "#8da9c4" };
+    if (object.userData.mdrPhysics) spec.physics = { ...object.userData.mdrPhysics };
     if (spec.type === "glb") { spec.assetId = object.userData.mdrAssetId; spec.fileName = object.userData.mdrFileName || "model.glb"; }
     return spec;
   }
@@ -65,14 +67,20 @@
       const [axis, component] = field.dataset.inspector.split("-");
       const value = object ? axis === "position" ? object.position[component] : axis === "rotation" ? object.rotation[component] * 180 / Math.PI : object.scale[component] : null;
       field.value = value == null ? "" : String(Math.round(value * 100) / 100);
-      field.disabled = !object;
+      field.disabled = !object || physicsBodies.size > 0;
     });
+    const physicsType = panel.querySelector("[data-physics-type]");
+    const physics = object && object.userData.mdrPhysics;
+    if (physicsType) { physicsType.value = physics ? physics.type : "none"; physicsType.disabled = !object || physicsBodies.size > 0; }
+    const massField = panel.querySelector("[data-physics-mass]");
+    if (massField) { massField.value = physics ? String(physics.mass) : "1"; massField.disabled = !physics || physicsBodies.size > 0; }
   }
   function addPrimitive(type, data = {}) {
     if (!active || typeof active.editorAddPrimitive !== "function") throw new Error("جسر محرر MDR غير متاح لهذا المحرك");
     if (objects.length >= Core.MAX_OBJECTS) throw new Error("وصلت إلى الحد الأقصى للعناصر");
     const spec = Core.normalizeObject({ ...data, type, id: data.id || ("mdr-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8)) });
     const object = active.editorAddPrimitive(spec.type, spec);
+    if (spec.physics) object.userData.mdrPhysics = { ...spec.physics };
     objects.push(object); selectedId = spec.id; updateSelection(); say("تمت إضافة " + spec.name); return object;
   }
   function disposeObject(object) {
@@ -96,6 +104,7 @@
     textures.forEach(texture => texture.dispose && texture.dispose());
   }
   function clearObjects() {
+    if (physicsBodies.size) stopPhysicsTest(false);
     for (const object of objects.slice()) disposeObject(object);
     objects = [];
     if (active) active._mdrEditorObjects = [];
@@ -123,6 +132,7 @@
     object.name = spec.name || object.name;
     object.position.fromArray(spec.position); object.rotation.set(spec.rotation[0], spec.rotation[1], spec.rotation[2]); object.scale.fromArray(spec.scale);
     object.userData.mdrId = spec.id; object.userData.mdrAssetId = spec.assetId; object.userData.mdrFileName = spec.fileName || entry.name;
+    if (spec.physics) object.userData.mdrPhysics = { ...spec.physics };
     return object;
   }
   async function applyProject(data) {
@@ -210,7 +220,7 @@
     } catch (error) { aiImage = null; setAIStatus(error.message, true); }
   }
   async function generateAI3D() {
-    if (!window.MDRAI3D) return setAIStatus("وحدة AI 3D غير محمّلة", true);
+    if (!window.MDRAI3D) return setAIStatus("وحدة تحويل الصور غير محمّلة", true);
     if (!aiImage) return setAIStatus("اختر صورة أولاً", true);
     const keyInput = panel.querySelector(".ai-key"), key = keyInput && keyInput.value;
     try { window.MDRAI3D.validateKey(key); window.MDRAI3D.validateImage(aiImage); }
@@ -262,6 +272,66 @@
       setAIStatus("تعذر جلب الملف مباشرة (قد تكون سياسة CORS). نزّله أولاً ثم استخدم زر استيراد GLB. " + error.message, true);
     } finally { button.disabled = false; button.textContent = "إضافة النموذج إلى المشهد"; }
   }
+  function bodyDimensions(object, settings) {
+    const scale = object.scale;
+    if (settings.shape === "sphere") {
+      const geometryRadius = object.geometry && object.geometry.parameters && Number(object.geometry.parameters.radius) || 0.5;
+      return { radius: Math.max(0.05, geometryRadius * Math.max(Math.abs(scale.x), Math.abs(scale.y), Math.abs(scale.z))) };
+    }
+    const params = object.geometry && object.geometry.parameters || {};
+    const width = Number(params.width) || Number(params.radiusTop) * 2 || 1;
+    const height = Number(params.height) || 1;
+    const depth = Number(params.depth) || Number(params.radiusTop) * 2 || 1;
+    return { size: [width * Math.abs(scale.x), height * Math.abs(scale.y), depth * Math.abs(scale.z)] };
+  }
+  function startPhysicsTest() {
+    if (!active || !active.physicsWorld) return say("محرك الفيزياء غير جاهز في هذا العالم", true);
+    if (physicsBodies.size) return;
+    const configured = objects.filter(object => object.userData.mdrPhysics && object.userData.mdrType !== "directionalLight");
+    if (!configured.length) return say("اختر نوع جسم فيزيائي لعنصر واحد على الأقل من المفتش", true);
+    try {
+      for (const object of configured) {
+        const settings = Core.normalizeObject({ ...specFromObject(object), physics: object.userData.mdrPhysics }).physics;
+        const snapshot = { position: object.position.toArray(), rotation: object.rotation.toArray().slice(0, 3), scale: object.scale.toArray() };
+        const body = active.physicsWorld.addBody({
+          name: object.name, object, type: settings.type, shape: settings.shape,
+          position: snapshot.position, ...bodyDimensions(object, settings),
+          mass: settings.mass, friction: settings.friction, restitution: settings.restitution
+        });
+        physicsBodies.set(body.id, { object, snapshot });
+      }
+      panel.classList.add("physics-running");
+      panel.querySelector('[data-action="physics-start"]').disabled = true;
+      panel.querySelector('[data-action="physics-stop"]').disabled = false;
+      panel.querySelectorAll("[data-inspector], [data-physics-type], [data-physics-mass]").forEach(field => { field.disabled = true; });
+      panel.querySelectorAll(".mdr2-studio-grid button").forEach(button => { button.disabled = true; });
+      say(`بدأ اختبار الفيزياء — ${physicsBodies.size} جسم. الإيقاف يعيد المشهد لوضع التحرير.`);
+    } catch (error) {
+      stopPhysicsTest(false);
+      say("تعذر بدء اختبار الفيزياء: " + (error.message || String(error)), true);
+    }
+  }
+  function stopPhysicsTest(report = true) {
+    if (!physicsBodies.size) return;
+    for (const [id, entry] of physicsBodies) {
+      if (active && active.physicsWorld) active.physicsWorld.removeBody(id);
+      entry.object.position.fromArray(entry.snapshot.position);
+      entry.object.rotation.set(...entry.snapshot.rotation);
+      entry.object.scale.fromArray(entry.snapshot.scale);
+    }
+    physicsBodies.clear();
+    if (panel) {
+      panel.classList.remove("physics-running");
+      const start = panel.querySelector('[data-action="physics-start"]'), stop = panel.querySelector('[data-action="physics-stop"]');
+      if (start) start.disabled = false;
+      if (stop) stop.disabled = true;
+      panel.querySelectorAll("[data-inspector], [data-physics-type]").forEach(field => { field.disabled = !selected(); });
+      const mass = panel.querySelector("[data-physics-mass]"); if (mass) mass.disabled = !selected() || !selected().userData.mdrPhysics;
+      panel.querySelectorAll(".mdr2-studio-grid button").forEach(button => { button.disabled = false; });
+    }
+    updateSelection();
+    if (report) say("توقف الاختبار؛ أُعيدت الأجسام إلى مواضع التحرير.");
+  }
   function transform(action) {
     const object = selected(); if (!object) return say("اختر عنصراً أولاً");
     if (action === "x-") object.position.x -= 1; if (action === "x+") object.position.x += 1;
@@ -281,11 +351,12 @@
   }
   function unmount() {
     if (aiController) aiController.abort();
+    if (physicsBodies.size) stopPhysicsTest(false);
     if (panel) {
       const preview = panel.querySelector(".ai-preview"); if (preview && preview.dataset.url) URL.revokeObjectURL(preview.dataset.url);
       panel.remove();
     }
-    panel = null; active = null; objects = []; selectedId = null; aiImage = null; aiModelUrl = null;
+    panel = null; active = null; objects = []; selectedId = null; aiImage = null; aiModelUrl = null; physicsBodies = new Map();
   }
   function mount(world) {
     if (!world || !world.engine || !world.scene || active === world) return;
@@ -301,6 +372,9 @@
       <div class="inspector-grid" aria-label="تحويلات العنصر">
         ${["position","rotation","scale"].map(axis => ["x","y","z"].map(component => `<label class="inspector-field"><span>${axis === "position" ? "موقع" : axis === "rotation" ? "دوران°" : "قياس"} ${component.toUpperCase()}</span><input type="number" step="0.1" data-inspector="${axis}-${component}" aria-label="${axis} ${component}" disabled></label>`).join("")).join("")}
       </div>
+      <label class="physics-setting"><span>جسم الفيزياء</span><select data-physics-type aria-label="نوع جسم الفيزياء" disabled><option value="none">بدون</option><option value="static">ثابت</option><option value="dynamic">ديناميكي</option><option value="kinematic">حركي</option></select></label>
+      <label class="physics-setting"><span>الكتلة (كغم)</span><input data-physics-mass type="number" min="0.001" max="10000" step="0.1" value="1" aria-label="كتلة الجسم بالكيلوغرام" disabled></label>
+      <div class="physics-actions"><button class="primary" data-action="physics-start">▶ اختبار الفيزياء</button><button data-action="physics-stop" disabled>■ إيقاف وإعادة</button></div>
       <div class="mdr2-studio-grid">
         <button class="primary" data-add="box">＋ مكعب</button><button data-add="sphere">＋ كرة</button><button data-add="cylinder">＋ أسطوانة</button>
         <button class="wide" data-add="directionalLight">＋ ضوء اتجاهي</button>
@@ -314,7 +388,7 @@
         <div class="asset-note">استيراد GLB 2.0 حتى 50MB مع خامات PBR والصور المضمنة. الأصول تحفظ محلياً على هذا الجهاز.</div>
         <div class="status asset-status">يدعم المجسمات الثابتة؛ لا يدعم Rig أو Animation أو Draco بعد</div>
       </div>
-      <div class="mdr2-ai"><b>✨ AI Image → 3D</b>
+      <div class="mdr2-ai"><b>🧩 تحويل صورة إلى مجسم 3D</b>
         <input class="ai-key" type="password" autocomplete="off" placeholder="Meshy API Key (لا يُحفظ)"/>
         <input class="ai-file" type="file" accept="image/png,image/jpeg,image/webp"/>
         <img class="ai-preview" alt="معاينة صورة الإدخال"/>
@@ -328,6 +402,21 @@
     frame.appendChild(panel); refreshList();
     panel.addEventListener("change", event => {
       if (event.target.matches(".ai-file")) chooseAIImage(event.target.files && event.target.files[0]);
+      else if (event.target.matches("[data-physics-type]")) {
+        const object = selected(); if (!object || physicsBodies.size) return;
+        const type = event.target.value;
+        if (type === "none") delete object.userData.mdrPhysics;
+        else object.userData.mdrPhysics = Core.normalizeObject({ ...specFromObject(object), physics: { ...(object.userData.mdrPhysics || {}), type } }).physics;
+        updateSelection();
+        say(type === "none" ? "أزيل إعداد الفيزياء" : `تم تعيين الجسم الفيزيائي: ${type}`);
+      } else if (event.target.matches("[data-physics-mass]")) {
+        const object = selected(); if (!object || physicsBodies.size || !object.userData.mdrPhysics) return;
+        const mass = Number(event.target.value);
+        if (!Number.isFinite(mass)) return say("أدخل كتلة رقمية صحيحة", true);
+        object.userData.mdrPhysics = Core.normalizeObject({ ...specFromObject(object), physics: { ...object.userData.mdrPhysics, mass } }).physics;
+        event.target.value = String(object.userData.mdrPhysics.mass);
+        say(`كتلة ${object.name}: ${object.userData.mdrPhysics.mass} كغم`);
+      }
     });
     panel.addEventListener("input", event => {
       const field = event.target.closest("[data-inspector]");
@@ -348,6 +437,8 @@
     panel.addEventListener("click", event => {
       const button = event.target.closest("button"); if (!button) return;
       if (button.dataset.selectObject) { selectedId = button.dataset.selectObject; updateSelection(); }
+      else if (button.dataset.action === "physics-start") startPhysicsTest();
+      else if (button.dataset.action === "physics-stop") stopPhysicsTest();
       else if (button.dataset.add) { try { addPrimitive(button.dataset.add); } catch (error) { say(error.message, true); } }
       else if (button.dataset.transform) transform(button.dataset.transform);
       else if (button.dataset.action === "save") save();

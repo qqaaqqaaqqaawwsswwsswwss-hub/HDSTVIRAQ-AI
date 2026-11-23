@@ -90,4 +90,8 @@ test('mobile scene editor presents a touch-sized scene dock and inspector', () =
   assert.match(runtime, /object\.scale\.fromArray\(next\)/);
   assert.match(runtime, /max-height:min\(46vh,420px\)/);
   assert.match(runtime, /min-height:42px/);
+  assert.match(runtime, /data-physics-type/);
+  assert.match(runtime, /active\.physicsWorld\.addBody/);
+  assert.match(runtime, /active\.physicsWorld\.removeBody/);
+  assert.match(runtime, /stopPhysicsTest/);
 });
