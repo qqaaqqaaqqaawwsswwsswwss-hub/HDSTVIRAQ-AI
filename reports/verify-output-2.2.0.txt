@@ -1,0 +1,169 @@
+MDR SOURCE VERIFY: PASS
+ - AndroidManifest.xml parses
+ - WebView security and file picker markers present
+ - Engine context lifecycle and mobile controls present
+ - MDR Studio scene editor assets, lifecycle and engine bridge present
+ - Factory ZIP limits and non-certifying scan text present
+ - Bundled JavaScript syntax passes node --check
+ - ZIP Guard and Factory template test suites are available under tools/tests/
+TAP version 13
+# Subtest: Factory generated Android manifest has safe baseline settings
+ok 1 - Factory generated Android manifest has safe baseline settings
+  ---
+  duration_ms: 0.735697
+  type: 'test'
+  ...
+# Subtest: Factory generated Activity supports WebView file input via Android document picker
+ok 2 - Factory generated Activity supports WebView file input via Android document picker
+  ---
+  duration_ms: 0.258329
+  type: 'test'
+  ...
+# Subtest: Factory generated Gradle module includes AndroidX WebKit and API targets
+ok 3 - Factory generated Gradle module includes AndroidX WebKit and API targets
+  ---
+  duration_ms: 0.141123
+  type: 'test'
+  ...
+# Subtest: Factory generator emits complete Gradle project scaffolding and a file-selectable WebView Activity
+ok 4 - Factory generator emits complete Gradle project scaffolding and a file-selectable WebView Activity
+  ---
+  duration_ms: 1.210612
+  type: 'test'
+  ...
+# Subtest: AI image-to-3D validates image MIME and 20 MB limit
+ok 5 - AI image-to-3D validates image MIME and 20 MB limit
+  ---
+  duration_ms: 1.153076
+  type: 'test'
+  ...
+# Subtest: AI image-to-3D requires a plausible API key and image data URI
+ok 6 - AI image-to-3D requires a plausible API key and image data URI
+  ---
+  duration_ms: 0.330918
+  type: 'test'
+  ...
+# Subtest: AI image-to-3D creates a textured GLB task and returns task id
+ok 7 - AI image-to-3D creates a textured GLB task and returns task id
+  ---
+  duration_ms: 0.89681
+  type: 'test'
+  ...
+# Subtest: AI task polling rejects invalid task ids and parses status
+ok 8 - AI task polling rejects invalid task ids and parses status
+  ---
+  duration_ms: 0.392832
+  type: 'test'
+  ...
+# Subtest: bundled MDR world exposes primitive editor bridge using bundled Three constructors
+ok 9 - bundled MDR world exposes primitive editor bridge using bundled Three constructors
+  ---
+  duration_ms: 1.484875
+  type: 'test'
+  ...
+# Subtest: studio runtime does not mistake the Three.js revision string for its API
+ok 10 - studio runtime does not mistake the Three.js revision string for its API
+  ---
+  duration_ms: 0.181874
+  type: 'test'
+  ...
+# Subtest: editor bridge persists and disposes only its own scene objects
+ok 11 - editor bridge persists and disposes only its own scene objects
+  ---
+  duration_ms: 0.121553
+  type: 'test'
+  ...
+# Subtest: creates and round-trips a valid MDR scene project
+ok 12 - creates and round-trips a valid MDR scene project
+  ---
+  duration_ms: 1.479927
+  type: 'test'
+  ...
+# Subtest: rejects unsupported object types and malformed transform vectors
+ok 13 - rejects unsupported object types and malformed transform vectors
+  ---
+  duration_ms: 0.399501
+  type: 'test'
+  ...
+# Subtest: clamps transform values and rejects duplicate IDs
+ok 14 - clamps transform values and rejects duplicate IDs
+  ---
+  duration_ms: 0.180743
+  type: 'test'
+  ...
+# Subtest: rejects too many objects and oversized or invalid JSON
+ok 15 - rejects too many objects and oversized or invalid JSON
+  ---
+  duration_ms: 0.27242
+  type: 'test'
+  ...
+# Subtest: accepts directional lights and migrates legacy pointLight projects
+ok 16 - accepts directional lights and migrates legacy pointLight projects
+  ---
+  duration_ms: 1.382912
+  type: 'test'
+  ...
+# Subtest: accepts an ordinary ZIP upload under the byte limit
+ok 17 - accepts an ordinary ZIP upload under the byte limit
+  ---
+  duration_ms: 0.854726
+  type: 'test'
+  ...
+# Subtest: rejects unsupported extension, empty archive and oversized upload
+ok 18 - rejects unsupported extension, empty archive and oversized upload
+  ---
+  duration_ms: 0.469827
+  type: 'test'
+  ...
+# Subtest: normalizes safe Windows separators and rejects traversal/absolute/NUL paths
+ok 19 - normalizes safe Windows separators and rejects traversal/absolute/NUL paths
+  ---
+  duration_ms: 0.336687
+  type: 'test'
+  ...
+# Subtest: accepts entries that fit configured limits and reports totals
+ok 20 - accepts entries that fit configured limits and reports totals
+  ---
+  duration_ms: 0.650138
+  type: 'test'
+  ...
+# Subtest: rejects duplicate names case-insensitively
+ok 21 - rejects duplicate names case-insensitively
+  ---
+  duration_ms: 0.155344
+  type: 'test'
+  ...
+# Subtest: rejects too many files, an oversized entry and total expanded size
+ok 22 - rejects too many files, an oversized entry and total expanded size
+  ---
+  duration_ms: 0.223406
+  type: 'test'
+  ...
+# Subtest: rejects non-empty ZIP entries with missing compressed data
+ok 23 - rejects non-empty ZIP entries with missing compressed data
+  ---
+  duration_ms: 0.17886
+  type: 'test'
+  ...
+# Subtest: rejects invalid negative or non-numeric compressed sizes
+ok 24 - rejects invalid negative or non-numeric compressed sizes
+  ---
+  duration_ms: 0.149405
+  type: 'test'
+  ...
+# Subtest: rejects suspicious compression ratios
+ok 25 - rejects suspicious compression ratios
+  ---
+  duration_ms: 0.294002
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 261.224404
+MDR VERIFY ALL: PASS

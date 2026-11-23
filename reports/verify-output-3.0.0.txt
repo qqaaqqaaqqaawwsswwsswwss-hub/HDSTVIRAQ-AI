@@ -1,0 +1,445 @@
+MDR SOURCE VERIFY: PASS
+ - AndroidManifest.xml parses
+ - WebView security and file picker markers present
+ - Engine context lifecycle and mobile controls present
+ - MDR Studio scene editor assets, lifecycle and engine bridge present
+ - Factory ZIP limits and non-certifying scan text present
+ - Bundled JavaScript syntax passes node --check
+ - ZIP Guard and Factory template test suites are available under tools/tests/
+TAP version 13
+# Subtest: Factory generated Android manifest has safe baseline settings
+ok 1 - Factory generated Android manifest has safe baseline settings
+  ---
+  duration_ms: 0.63745
+  type: 'test'
+  ...
+# Subtest: Factory generated Activity supports WebView file input via Android document picker
+ok 2 - Factory generated Activity supports WebView file input via Android document picker
+  ---
+  duration_ms: 0.23748
+  type: 'test'
+  ...
+# Subtest: Factory generated Gradle module includes AndroidX WebKit and API targets
+ok 3 - Factory generated Gradle module includes AndroidX WebKit and API targets
+  ---
+  duration_ms: 0.117904
+  type: 'test'
+  ...
+# Subtest: Factory generator emits complete Gradle project scaffolding and a file-selectable WebView Activity
+ok 4 - Factory generator emits complete Gradle project scaffolding and a file-selectable WebView Activity
+  ---
+  duration_ms: 1.086082
+  type: 'test'
+  ...
+# Subtest: AI image-to-3D validates image MIME and 20 MB limit
+ok 5 - AI image-to-3D validates image MIME and 20 MB limit
+  ---
+  duration_ms: 1.048687
+  type: 'test'
+  ...
+# Subtest: AI image-to-3D requires a plausible API key and image data URI
+ok 6 - AI image-to-3D requires a plausible API key and image data URI
+  ---
+  duration_ms: 0.470945
+  type: 'test'
+  ...
+# Subtest: AI image-to-3D creates a textured GLB task and returns task id
+ok 7 - AI image-to-3D creates a textured GLB task and returns task id
+  ---
+  duration_ms: 0.811196
+  type: 'test'
+  ...
+# Subtest: AI task polling rejects invalid task ids and parses status
+ok 8 - AI task polling rejects invalid task ids and parses status
+  ---
+  duration_ms: 0.342084
+  type: 'test'
+  ...
+# Subtest: bundled MDR world exposes primitive editor bridge using bundled Three constructors
+ok 9 - bundled MDR world exposes primitive editor bridge using bundled Three constructors
+  ---
+  duration_ms: 1.354198
+  type: 'test'
+  ...
+# Subtest: studio runtime does not mistake the Three.js revision string for its API
+ok 10 - studio runtime does not mistake the Three.js revision string for its API
+  ---
+  duration_ms: 0.140097
+  type: 'test'
+  ...
+# Subtest: editor bridge persists and disposes only its own scene objects
+ok 11 - editor bridge persists and disposes only its own scene objects
+  ---
+  duration_ms: 0.225012
+  type: 'test'
+  ...
+# Subtest: bundled engine exposes only the constructors needed by the GLB adapter
+ok 12 - bundled engine exposes only the constructors needed by the GLB adapter
+  ---
+  duration_ms: 0.179244
+  type: 'test'
+  ...
+# Subtest: CRC32 matches the ZIP reference check value
+ok 13 - CRC32 matches the ZIP reference check value
+  ---
+  duration_ms: 0.712021
+  type: 'test'
+  ...
+# Subtest: ZIP writer emits a valid local header, UTF-8 name and end directory
+ok 14 - ZIP writer emits a valid local header, UTF-8 name and end directory
+  ---
+  duration_ms: 0.957322
+  type: 'test'
+  ...
+# Subtest: ZIP writer rejects path traversal, duplicate paths and unsupported input data
+ok 15 - ZIP writer rejects path traversal, duplicate paths and unsupported input data
+  ---
+  duration_ms: 0.61056
+  type: 'test'
+  ...
+# Subtest: stored ZIP reader round-trips project files and rejects CRC tampering
+ok 16 - stored ZIP reader round-trips project files and rejects CRC tampering
+  ---
+  duration_ms: 1.190896
+  type: 'test'
+  ...
+# Subtest: project package import requires the full MDR scene and asset manifest
+ok 17 - project package import requires the full MDR scene and asset manifest
+  ---
+  duration_ms: 0.694064
+  type: 'test'
+  ...
+# Subtest: valid project archive passes its scene and manifest to MDR Studio
+ok 18 - valid project archive passes its scene and manifest to MDR Studio
+  ---
+  duration_ms: 0.433178
+  type: 'test'
+  ...
+# Subtest: stored ZIP reader rejects multi-disk and inconsistent end-directory records
+ok 19 - stored ZIP reader rejects multi-disk and inconsistent end-directory records
+  ---
+  duration_ms: 0.419138
+  type: 'test'
+  ...
+# Subtest: parses a minimal self-contained GLB 2.0 file
+ok 20 - parses a minimal self-contained GLB 2.0 file
+  ---
+  duration_ms: 1.163466
+  type: 'test'
+  ...
+# Subtest: rejects invalid magic, unsupported version and inconsistent declared lengths
+ok 21 - rejects invalid magic, unsupported version and inconsistent declared lengths
+  ---
+  duration_ms: 0.650971
+  type: 'test'
+  ...
+# Subtest: rejects external buffers, unsupported skinning and invalid buffer views
+ok 22 - rejects external buffers, unsupported skinning and invalid buffer views
+  ---
+  duration_ms: 1.172169
+  type: 'test'
+  ...
+# Subtest: validates GLB filenames and bounded upload sizes
+ok 23 - validates GLB filenames and bounded upload sizes
+  ---
+  duration_ms: 0.226975
+  type: 'test'
+  ...
+# Subtest: asset store rejects malformed asset identifiers
+ok 24 - asset store rejects malformed asset identifiers
+  ---
+  duration_ms: 0.300524
+  type: 'test'
+  ...
+# Subtest: loads GLB mesh primitives into the active MDR scene using the narrow engine API
+ok 25 - loads GLB mesh primitives into the active MDR scene using the narrow engine API
+  ---
+  duration_ms: 1.44403
+  type: 'test'
+  ...
+# Subtest: rejects non-finite mesh positions before attaching them to the world
+ok 26 - rejects non-finite mesh positions before attaching them to the world
+  ---
+  duration_ms: 0.564112
+  type: 'test'
+  ...
+# Subtest: enforces safe accessor, primitive and mobile texture budgets
+ok 27 - enforces safe accessor, primitive and mobile texture budgets
+  ---
+  duration_ms: 2.032078
+  type: 'test'
+  ...
+# Subtest: procedural world generation is deterministic and bounded
+ok 28 - procedural world generation is deterministic and bounded
+  ---
+  duration_ms: 1.908986
+  type: 'test'
+  ...
+# Subtest: procedural world clamps oversized requests
+ok 29 - procedural world clamps oversized requests
+  ---
+  duration_ms: 2.950162
+  type: 'test'
+  ...
+# Subtest: renderer capability detection reports WebGPU without claiming Vulkan
+ok 30 - renderer capability detection reports WebGPU without claiming Vulkan
+  ---
+  duration_ms: 2.151043
+  type: 'test'
+  ...
+# Subtest: animation controller validates mixer and plays named clips
+ok 31 - animation controller validates mixer and plays named clips
+  ---
+  duration_ms: 0.581528
+  type: 'test'
+  ...
+# Subtest: multiplayer rejects unsafe protocols and malformed identifiers
+ok 32 - multiplayer rejects unsafe protocols and malformed identifiers
+  ---
+  duration_ms: 19.730722
+  type: 'test'
+  ...
+# Subtest: visual graph evaluates allow-listed nodes without eval
+ok 33 - visual graph evaluates allow-listed nodes without eval
+  ---
+  duration_ms: 0.378519
+  type: 'test'
+  ...
+# Subtest: visual graph rejects cycles and unknown operations
+ok 34 - visual graph rejects cycles and unknown operations
+  ---
+  duration_ms: 0.252783
+  type: 'test'
+  ...
+# Subtest: world streamer obeys active chunk budget and unloads
+ok 35 - world streamer obeys active chunk budget and unloads
+  ---
+  duration_ms: 1.916377
+  type: 'test'
+  ...
+# Subtest: vehicle dynamics accelerates and returns bounded steering state
+ok 36 - vehicle dynamics accelerates and returns bounded steering state
+  ---
+  duration_ms: 0.605042
+  type: 'test'
+  ...
+# Subtest: vehicle dynamics rejects invalid velocity
+ok 37 - vehicle dynamics rejects invalid velocity
+  ---
+  duration_ms: 0.480629
+  type: 'test'
+  ...
+# Subtest: SmartScale attaches once and registers a render-system update
+ok 38 - SmartScale attaches once and registers a render-system update
+  ---
+  duration_ms: 2.054881
+  type: 'test'
+  ...
+# Subtest: adaptive resolution steps down under sustained pressure and restores at dispose
+ok 39 - adaptive resolution steps down under sustained pressure and restores at dispose
+  ---
+  duration_ms: 2.258581
+  type: 'test'
+  ...
+# Subtest: manual full quality disables automatic changes and restores maximum scale
+ok 40 - manual full quality disables automatic changes and restores maximum scale
+  ---
+  duration_ms: 1.363781
+  type: 'test'
+  ...
+# Subtest: SceneBudget culls far registered objects and restores visibility on unregister
+ok 41 - SceneBudget culls far registered objects and restores visibility on unregister
+  ---
+  duration_ms: 0.928079
+  type: 'test'
+  ...
+# Subtest: SmartScale ignores invalid worlds and rejects invalid scene budget entries
+ok 42 - SmartScale ignores invalid worlds and rejects invalid scene budget entries
+  ---
+  duration_ms: 0.94224
+  type: 'test'
+  ...
+# Subtest: world-ready and world-destroy lifecycle auto attach and clean up
+ok 43 - world-ready and world-destroy lifecycle auto attach and clean up
+  ---
+  duration_ms: 0.647585
+  type: 'test'
+  ...
+# Subtest: dynamic rigid body falls under gravity and rests on a static floor
+ok 44 - dynamic rigid body falls under gravity and rests on a static floor
+  ---
+  duration_ms: 10.975889
+  type: 'test'
+  ...
+# Subtest: sphere-sphere collision resolves overlap and emits start/stay/end events
+ok 45 - sphere-sphere collision resolves overlap and emits start/stay/end events
+  ---
+  duration_ms: 0.648897
+  type: 'test'
+  ...
+# Subtest: box-box and sphere-box narrow phase produce stable contacts
+ok 46 - box-box and sphere-box narrow phase produce stable contacts
+  ---
+  duration_ms: 0.453089
+  type: 'test'
+  ...
+# Subtest: sensor pairs emit trigger events without changing body velocity
+ok 47 - sensor pairs emit trigger events without changing body velocity
+  ---
+  duration_ms: 0.485376
+  type: 'test'
+  ...
+# Subtest: forces, impulses, kinematic bodies and teleport are supported
+ok 48 - forces, impulses, kinematic bodies and teleport are supported
+  ---
+  duration_ms: 0.990941
+  type: 'test'
+  ...
+# Subtest: collision masks filter pairs and bodies are bounded
+ok 49 - collision masks filter pairs and bodies are bounded
+  ---
+  duration_ms: 0.497054
+  type: 'test'
+  ...
+# Subtest: visual objects synchronize to the simulated transform
+ok 50 - visual objects synchronize to the simulated transform
+  ---
+  duration_ms: 0.353221
+  type: 'test'
+  ...
+# Subtest: rejects invalid configuration and invalid time steps; dispose is terminal
+ok 51 - rejects invalid configuration and invalid time steps; dispose is terminal
+  ---
+  duration_ms: 0.391428
+  type: 'test'
+  ...
+# Subtest: quality presets obey device DPR, renderbuffer and pixel-budget caps
+ok 52 - quality presets obey device DPR, renderbuffer and pixel-budget caps
+  ---
+  duration_ms: 0.730437
+  type: 'test'
+  ...
+# Subtest: quality preset rejects unknown profile names
+ok 53 - quality preset rejects unknown profile names
+  ---
+  duration_ms: 0.317028
+  type: 'test'
+  ...
+# Subtest: 4K capture dimensions preserve aspect ratio and cap unsupported GPUs
+ok 54 - 4K capture dimensions preserve aspect ratio and cap unsupported GPUs
+  ---
+  duration_ms: 0.627476
+  type: 'test'
+  ...
+# Subtest: applyProfile updates SmartScale and remembers the selected profile
+ok 55 - applyProfile updates SmartScale and remembers the selected profile
+  ---
+  duration_ms: 0.297689
+  type: 'test'
+  ...
+# Subtest: creates and round-trips a valid MDR scene project
+ok 56 - creates and round-trips a valid MDR scene project
+  ---
+  duration_ms: 1.607962
+  type: 'test'
+  ...
+# Subtest: rejects unsupported object types and malformed transform vectors
+ok 57 - rejects unsupported object types and malformed transform vectors
+  ---
+  duration_ms: 0.380862
+  type: 'test'
+  ...
+# Subtest: clamps transform values and rejects duplicate IDs
+ok 58 - clamps transform values and rejects duplicate IDs
+  ---
+  duration_ms: 0.232213
+  type: 'test'
+  ...
+# Subtest: rejects too many objects and oversized or invalid JSON
+ok 59 - rejects too many objects and oversized or invalid JSON
+  ---
+  duration_ms: 0.907599
+  type: 'test'
+  ...
+# Subtest: accepts directional lights and migrates legacy pointLight projects
+ok 60 - accepts directional lights and migrates legacy pointLight projects
+  ---
+  duration_ms: 0.260374
+  type: 'test'
+  ...
+# Subtest: scene version 3 stores GLB asset references without embedding binary data
+ok 61 - scene version 3 stores GLB asset references without embedding binary data
+  ---
+  duration_ms: 0.722856
+  type: 'test'
+  ...
+# Subtest: migrates scene version 2 to version 3 while retaining primitive objects
+ok 62 - migrates scene version 2 to version 3 while retaining primitive objects
+  ---
+  duration_ms: 0.184071
+  type: 'test'
+  ...
+# Subtest: accepts an ordinary ZIP upload under the byte limit
+ok 63 - accepts an ordinary ZIP upload under the byte limit
+  ---
+  duration_ms: 0.821862
+  type: 'test'
+  ...
+# Subtest: rejects unsupported extension, empty archive and oversized upload
+ok 64 - rejects unsupported extension, empty archive and oversized upload
+  ---
+  duration_ms: 0.430405
+  type: 'test'
+  ...
+# Subtest: normalizes safe Windows separators and rejects traversal/absolute/NUL paths
+ok 65 - normalizes safe Windows separators and rejects traversal/absolute/NUL paths
+  ---
+  duration_ms: 0.326291
+  type: 'test'
+  ...
+# Subtest: accepts entries that fit configured limits and reports totals
+ok 66 - accepts entries that fit configured limits and reports totals
+  ---
+  duration_ms: 0.703327
+  type: 'test'
+  ...
+# Subtest: rejects duplicate names case-insensitively
+ok 67 - rejects duplicate names case-insensitively
+  ---
+  duration_ms: 0.152154
+  type: 'test'
+  ...
+# Subtest: rejects too many files, an oversized entry and total expanded size
+ok 68 - rejects too many files, an oversized entry and total expanded size
+  ---
+  duration_ms: 0.826349
+  type: 'test'
+  ...
+# Subtest: rejects non-empty ZIP entries with missing compressed data
+ok 69 - rejects non-empty ZIP entries with missing compressed data
+  ---
+  duration_ms: 0.175789
+  type: 'test'
+  ...
+# Subtest: rejects invalid negative or non-numeric compressed sizes
+ok 70 - rejects invalid negative or non-numeric compressed sizes
+  ---
+  duration_ms: 0.251652
+  type: 'test'
+  ...
+# Subtest: rejects suspicious compression ratios
+ok 71 - rejects suspicious compression ratios
+  ---
+  duration_ms: 0.267896
+  type: 'test'
+  ...
+1..71
+# tests 71
+# suites 0
+# pass 71
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 603.659389
+MDR VERIFY ALL: PASS

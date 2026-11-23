@@ -1,0 +1,11 @@
+{
+  "name": "mdr-platform",
+  "version": "3.0.3",
+  "private": true,
+  "description": "MDR Platform — mobile-first game engine and Android app studio",
+  "scripts": {
+    "build:web": "node scripts/build-web.cjs",
+    "test": "node --test tools/tests/*.test.cjs",
+    "verify": "python3 tools/verify_source.py && npm test"
+  }
+}

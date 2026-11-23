@@ -1,0 +1,145 @@
+MDR SOURCE VERIFY: PASS
+ - AndroidManifest.xml parses
+ - WebView security and file picker markers present
+ - Engine context lifecycle and mobile controls present
+ - MDR Studio scene editor assets, lifecycle and engine bridge present
+ - Factory ZIP limits and non-certifying scan text present
+ - Bundled JavaScript syntax passes node --check
+ - ZIP Guard and Factory template test suites are available under tools/tests/
+TAP version 13
+# Subtest: Factory generated Android manifest has safe baseline settings
+ok 1 - Factory generated Android manifest has safe baseline settings
+  ---
+  duration_ms: 0.743199
+  type: 'test'
+  ...
+# Subtest: Factory generated Activity supports WebView file input via Android document picker
+ok 2 - Factory generated Activity supports WebView file input via Android document picker
+  ---
+  duration_ms: 0.23912
+  type: 'test'
+  ...
+# Subtest: Factory generated Gradle module includes AndroidX WebKit and API targets
+ok 3 - Factory generated Gradle module includes AndroidX WebKit and API targets
+  ---
+  duration_ms: 0.122965
+  type: 'test'
+  ...
+# Subtest: Factory generator emits complete Gradle project scaffolding and a file-selectable WebView Activity
+ok 4 - Factory generator emits complete Gradle project scaffolding and a file-selectable WebView Activity
+  ---
+  duration_ms: 1.2157
+  type: 'test'
+  ...
+# Subtest: bundled MDR world exposes primitive editor bridge using bundled Three constructors
+ok 5 - bundled MDR world exposes primitive editor bridge using bundled Three constructors
+  ---
+  duration_ms: 1.489031
+  type: 'test'
+  ...
+# Subtest: studio runtime does not mistake the Three.js revision string for its API
+ok 6 - studio runtime does not mistake the Three.js revision string for its API
+  ---
+  duration_ms: 0.423177
+  type: 'test'
+  ...
+# Subtest: editor bridge persists and disposes only its own scene objects
+ok 7 - editor bridge persists and disposes only its own scene objects
+  ---
+  duration_ms: 0.129024
+  type: 'test'
+  ...
+# Subtest: creates and round-trips a valid MDR scene project
+ok 8 - creates and round-trips a valid MDR scene project
+  ---
+  duration_ms: 1.851859
+  type: 'test'
+  ...
+# Subtest: rejects unsupported object types and malformed transform vectors
+ok 9 - rejects unsupported object types and malformed transform vectors
+  ---
+  duration_ms: 0.555887
+  type: 'test'
+  ...
+# Subtest: clamps transform values and rejects duplicate IDs
+ok 10 - clamps transform values and rejects duplicate IDs
+  ---
+  duration_ms: 0.268475
+  type: 'test'
+  ...
+# Subtest: rejects too many objects and oversized or invalid JSON
+ok 11 - rejects too many objects and oversized or invalid JSON
+  ---
+  duration_ms: 0.485712
+  type: 'test'
+  ...
+# Subtest: accepts directional lights and migrates legacy pointLight projects
+ok 12 - accepts directional lights and migrates legacy pointLight projects
+  ---
+  duration_ms: 1.061358
+  type: 'test'
+  ...
+# Subtest: accepts an ordinary ZIP upload under the byte limit
+ok 13 - accepts an ordinary ZIP upload under the byte limit
+  ---
+  duration_ms: 0.972985
+  type: 'test'
+  ...
+# Subtest: rejects unsupported extension, empty archive and oversized upload
+ok 14 - rejects unsupported extension, empty archive and oversized upload
+  ---
+  duration_ms: 0.438961
+  type: 'test'
+  ...
+# Subtest: normalizes safe Windows separators and rejects traversal/absolute/NUL paths
+ok 15 - normalizes safe Windows separators and rejects traversal/absolute/NUL paths
+  ---
+  duration_ms: 0.37197
+  type: 'test'
+  ...
+# Subtest: accepts entries that fit configured limits and reports totals
+ok 16 - accepts entries that fit configured limits and reports totals
+  ---
+  duration_ms: 0.618221
+  type: 'test'
+  ...
+# Subtest: rejects duplicate names case-insensitively
+ok 17 - rejects duplicate names case-insensitively
+  ---
+  duration_ms: 0.19915
+  type: 'test'
+  ...
+# Subtest: rejects too many files, an oversized entry and total expanded size
+ok 18 - rejects too many files, an oversized entry and total expanded size
+  ---
+  duration_ms: 0.281534
+  type: 'test'
+  ...
+# Subtest: rejects non-empty ZIP entries with missing compressed data
+ok 19 - rejects non-empty ZIP entries with missing compressed data
+  ---
+  duration_ms: 0.180993
+  type: 'test'
+  ...
+# Subtest: rejects invalid negative or non-numeric compressed sizes
+ok 20 - rejects invalid negative or non-numeric compressed sizes
+  ---
+  duration_ms: 0.257087
+  type: 'test'
+  ...
+# Subtest: rejects suspicious compression ratios
+ok 21 - rejects suspicious compression ratios
+  ---
+  duration_ms: 0.32565
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 227.266705
+MDR VERIFY ALL: PASS

@@ -1,0 +1,1 @@
+/* MDR App Factory optional project hook. Intentionally empty in the base platform. */
