@@ -103,6 +103,11 @@ test('mobile scene editor presents a touch-sized scene dock and inspector', () =
   assert.match(runtime, /max-height:min\(46vh,420px\)/);
   assert.match(runtime, /min-height:42px/);
   assert.match(runtime, /data-physics-type/);
+  assert.match(runtime, /data-physics-value="friction"/);
+  assert.match(runtime, /data-physics-value="restitution"/);
+  assert.match(runtime, /data-object-name/);
+  assert.match(runtime, /data-object-color/);
+  assert.match(runtime, /data-action="duplicate"/);
   assert.match(runtime, /active\.physicsWorld\.addBody/);
   assert.match(runtime, /active\.physicsWorld\.removeBody/);
   assert.match(runtime, /stopPhysicsTest/);

@@ -77,6 +77,14 @@
     if (physicsType) { physicsType.value = physics ? physics.type : "none"; physicsType.disabled = !object || physicsBodies.size > 0; }
     const massField = panel.querySelector("[data-physics-mass]");
     if (massField) { massField.value = physics ? String(physics.mass) : "1"; massField.disabled = !physics || physicsBodies.size > 0; }
+    const frictionField = panel.querySelector("[data-physics-value='friction']");
+    const restitutionField = panel.querySelector("[data-physics-value='restitution']");
+    if (frictionField) { frictionField.value = physics ? String(physics.friction) : "0.65"; frictionField.disabled = !physics || physicsBodies.size > 0; }
+    if (restitutionField) { restitutionField.value = physics ? String(physics.restitution) : "0.08"; restitutionField.disabled = !physics || physicsBodies.size > 0; }
+    const nameField = panel.querySelector("[data-object-name]");
+    if (nameField) { nameField.value = object ? object.name : ""; nameField.disabled = !object || physicsBodies.size > 0; }
+    const colorField = panel.querySelector("[data-object-color]");
+    if (colorField) { colorField.value = object && /^#[0-9a-f]{6}$/i.test(object.userData.mdrColor || "") ? object.userData.mdrColor : "#8da9c4"; colorField.disabled = !object || physicsBodies.size > 0 || object.userData.mdrType === "glb"; }
   }
   function addPrimitive(type, data = {}) {
     if (!active || typeof active.editorAddPrimitive !== "function") throw new Error("جسر محرر MDR غير متاح لهذا المحرك");
@@ -85,6 +93,36 @@
     const object = active.editorAddPrimitive(spec.type, spec);
     if (spec.physics) object.userData.mdrPhysics = { ...spec.physics };
     objects.push(object); selectedId = spec.id; isDirty = true; updateSelection(); say("تمت إضافة " + spec.name); return object;
+  }
+  async function duplicateSelected() {
+    const source = selected();
+    if (!source) return say("اختر عنصراً لنسخه", true);
+    if (objects.length >= Core.MAX_OBJECTS) return say("وصلت إلى الحد الأقصى للعناصر", true);
+    const spec = specFromObject(source);
+    const name = (source.name || "عنصر") + " نسخة";
+    const position = [source.position.x + 1, source.position.y, source.position.z + 1];
+    try {
+      if (spec.type === "glb") {
+        const entry = await window.MDRAssetStore.get(spec.assetId);
+        const copy = await importGLBBuffer(await entry.blob.arrayBuffer(), (spec.fileName || source.name || "model.glb").replace(/\.glb$/i, "") + "-copy.glb");
+        copy.name = name; copy.position.fromArray(position); copy.rotation.set(...spec.rotation); copy.scale.fromArray(spec.scale);
+        if (spec.physics) copy.userData.mdrPhysics = { ...spec.physics };
+        active._mdrEditorObjects = objects.slice(); updateSelection(); isDirty = true;
+        say("تم نسخ المجسم والأصل إلى عنصر مستقل");
+      } else {
+        addPrimitive(spec.type, { ...spec, id: "mdr-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8), name, position });
+      }
+    } catch (error) { say("تعذر نسخ العنصر: " + (error.message || String(error)), true); }
+  }
+  function applyObjectColor(object, color) {
+    if (!object || !/^#[0-9a-f]{6}$/i.test(color)) return false;
+    object.userData.mdrColor = color;
+    const paint = target => {
+      const swatch = target.material && target.material.color || target.color;
+      if (swatch && typeof swatch.set === "function") swatch.set(color);
+    };
+    if (typeof object.traverse === "function") object.traverse(paint); else paint(object);
+    return true;
   }
   function disposeObject(object) {
     if (!object) return;
@@ -386,7 +424,7 @@
       panel.classList.add("physics-running");
       panel.querySelector('[data-action="physics-start"]').disabled = true;
       panel.querySelector('[data-action="physics-stop"]').disabled = false;
-      panel.querySelectorAll("[data-inspector], [data-physics-type], [data-physics-mass]").forEach(field => { field.disabled = true; });
+      panel.querySelectorAll("[data-inspector], [data-physics-type], [data-physics-mass], [data-physics-value], [data-object-name], [data-object-color]").forEach(field => { field.disabled = true; });
       panel.querySelectorAll(".mdr2-studio-grid button, .project-actions button, .project-name, .project-list").forEach(control => { control.disabled = true; });
       say(`بدأ اختبار الفيزياء — ${physicsBodies.size} جسم. الإيقاف يعيد المشهد لوضع التحرير.`);
     } catch (error) {
@@ -408,7 +446,7 @@
       const start = panel.querySelector('[data-action="physics-start"]'), stop = panel.querySelector('[data-action="physics-stop"]');
       if (start) start.disabled = false;
       if (stop) stop.disabled = true;
-      panel.querySelectorAll("[data-inspector], [data-physics-type]").forEach(field => { field.disabled = !selected(); });
+      panel.querySelectorAll("[data-inspector], [data-physics-type], [data-physics-value], [data-object-name], [data-object-color]").forEach(field => { field.disabled = !selected(); });
       const mass = panel.querySelector("[data-physics-mass]"); if (mass) mass.disabled = !selected() || !selected().userData.mdrPhysics;
       panel.querySelectorAll(".mdr2-studio-grid button, .project-actions button, .project-name, .project-list").forEach(control => { control.disabled = false; });
     }
@@ -459,17 +497,21 @@
       <div class="dock-label"><span>شجرة المشهد</span><span class="dock-count">0 عنصر</span></div>
       <div class="scene-tree" role="tree" aria-label="عناصر المشهد"></div>
       <div class="dock-label"><span>المفتش · تحويل العنصر</span><span class="selected-label">لم يُحدد عنصر</span></div>
+      <label class="physics-setting"><span>اسم العنصر</span><input data-object-name maxlength="80" type="text" aria-label="اسم العنصر المحدد" disabled></label>
+      <label class="physics-setting"><span>لون العنصر</span><input data-object-color type="color" value="#8da9c4" aria-label="لون العنصر المحدد" disabled></label>
       <div class="inspector-grid" aria-label="تحويلات العنصر">
         ${["position","rotation","scale"].map(axis => ["x","y","z"].map(component => `<label class="inspector-field"><span>${axis === "position" ? "موقع" : axis === "rotation" ? "دوران°" : "قياس"} ${component.toUpperCase()}</span><input type="number" step="0.1" data-inspector="${axis}-${component}" aria-label="${axis} ${component}" disabled></label>`).join("")).join("")}
       </div>
       <label class="physics-setting"><span>جسم الفيزياء</span><select data-physics-type aria-label="نوع جسم الفيزياء" disabled><option value="none">بدون</option><option value="static">ثابت</option><option value="dynamic">ديناميكي</option><option value="kinematic">حركي</option></select></label>
       <label class="physics-setting"><span>الكتلة (كغم)</span><input data-physics-mass type="number" min="0.001" max="10000" step="0.1" value="1" aria-label="كتلة الجسم بالكيلوغرام" disabled></label>
+      <label class="physics-setting"><span>الاحتكاك</span><input data-physics-value="friction" type="number" min="0" max="1" step="0.05" value="0.65" aria-label="احتكاك الجسم" disabled></label>
+      <label class="physics-setting"><span>الارتداد</span><input data-physics-value="restitution" type="number" min="0" max="1" step="0.05" value="0.08" aria-label="ارتداد الجسم" disabled></label>
       <div class="physics-actions"><button class="primary" data-action="physics-start">▶ اختبار الفيزياء</button><button data-action="physics-stop" disabled>■ إيقاف وإعادة</button></div>
       <div class="mdr2-studio-grid">
         <button class="primary" data-add="box">＋ مكعب</button><button data-add="sphere">＋ كرة</button><button data-add="cylinder">＋ أسطوانة</button>
         <button class="wide" data-add="directionalLight">＋ ضوء اتجاهي</button>
         <button data-transform="x-">X −</button><button data-transform="x+">X +</button><button data-transform="z-">Z −</button><button data-transform="z+">Z +</button>
-        <button data-transform="rotate">دوران</button><button data-action="delete">حذف</button><button data-transform="scale-">تصغير</button><button data-transform="scale+">تكبير</button>
+        <button data-action="duplicate">نسخ العنصر</button><button data-transform="rotate">دوران</button><button data-action="delete">حذف</button><button data-transform="scale-">تصغير</button><button data-transform="scale+">تكبير</button>
         <button data-action="import-json">استيراد JSON</button>
         <button class="wide" data-action="import-package">استيراد مشروع .mdrgame</button>
         <button class="primary wide" data-action="import-glb">＋ استيراد مجسم GLB</button><button data-action="export-glb" class="wide">تنزيل GLB المحدد</button><button data-action="export" class="wide">تصدير بيانات المشهد</button>
@@ -512,8 +554,15 @@
       }
     });
     panel.addEventListener("input", event => {
-      const field = event.target.closest("[data-inspector]");
       const object = selected();
+      if (event.target.matches("[data-object-name]") && object) {
+        object.name = String(event.target.value).slice(0, 80); isDirty = true; refreshList(); return;
+      }
+      if (event.target.matches("[data-object-color]") && object && object.userData.mdrType !== "glb") {
+        if (applyObjectColor(object, event.target.value)) { isDirty = true; say("تم تحديث لون " + object.name); }
+        return;
+      }
+      const field = event.target.closest("[data-inspector]");
       if (!field || !object) return;
       const value = Number(field.value);
       if (!Number.isFinite(value)) return;
@@ -532,6 +581,7 @@
       if (button.dataset.selectObject) { selectedId = button.dataset.selectObject; updateSelection(); }
       else if (button.dataset.action === "physics-start") startPhysicsTest();
       else if (button.dataset.action === "physics-stop") stopPhysicsTest();
+      else if (button.dataset.action === "duplicate") duplicateSelected();
       else if (button.dataset.add) { try { addPrimitive(button.dataset.add); } catch (error) { say(error.message, true); } }
       else if (button.dataset.transform) transform(button.dataset.transform);
       else if (button.dataset.action === "save") save();

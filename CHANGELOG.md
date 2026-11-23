@@ -6,6 +6,7 @@
 - Added optional Cannon-es 0.20.0 3D physics (MIT, upstream source and bundled license recorded); it loads only when the physics tool is selected.
 - Added fixed-step dynamics, shape/body creation, impulses, collisions, transform binding, and bounded world lifecycle for the integrated physics system.
 - Added per-object static/dynamic/kinematic body configuration and mass in the scene inspector, persisted in scene files; physics play mode simulates selected bodies and restores their edit transforms on stop.
+- Added bounded local scene-project management, unsaved-change guards, complete game-package export, object rename/color/duplicate controls, and persisted friction/restitution settings.
 - Kept the existing MDR physics adapter as the default engine, with an Arabic Baghdad procedural scene flow.
 - Advanced Android metadata to 3.2.0 / versionCode 17 and prepared the single-APK GitHub Actions workflow at `ci/android-apk.yml`; activation awaits workflow-write permission.
 
