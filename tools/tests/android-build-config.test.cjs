@@ -79,6 +79,18 @@ test('Android has one application ID with physics in the single edition', () => 
   assert.match(read('app/src/main/assets/mdr-nextgen.js'), /proPhysicsButton\.style\.display='block'/);
 });
 
+test('scene manager saves named local projects, guards unsaved work and exports full packages', () => {
+  const runtime = read('app/src/main/assets/mdr-studio-runtime.js');
+  assert.match(runtime, /mdr\.studio\.projects\.v1/);
+  assert.match(runtime, /MAX_SAVED_PROJECTS = 10/);
+  assert.match(runtime, /MAX_LIBRARY_CHARS/);
+  assert.match(runtime, /توجد تغييرات غير محفوظة/);
+  assert.match(runtime, /exportProjectPackage/);
+  assert.match(runtime, /if \(isDirty && active && panel\) save\(\)/);
+  assert.match(runtime, /data-action="new-project"/);
+  assert.match(runtime, /data-action="delete-project"/);
+});
+
 test('mobile scene editor presents a touch-sized scene dock and inspector', () => {
   const runtime = read('app/src/main/assets/mdr-studio-runtime.js');
   assert.match(runtime, /شجرة المشهد/);

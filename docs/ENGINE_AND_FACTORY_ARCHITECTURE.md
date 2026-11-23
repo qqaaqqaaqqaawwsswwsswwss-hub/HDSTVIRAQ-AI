@@ -9,7 +9,8 @@
 - `index.html` contains the bundled React UI, bundled Three.js engine and Android project factory.
 - `mdr-zip-guard.js` validates uploaded archive metadata and limits before extraction.
 - `mdr-studio-core.js` validates the versioned `mdr-scene` JSON schema, supported object types, vector values, IDs, object count and import size. It migrates schema v1 `pointLight` records to `directionalLight` and upgrades both schema v1/v2 projects to v3.
-- `mdr-studio-runtime.js` attaches to the active Three.js city scene and provides a mobile editor for primitives and imported GLB assets.
+- `mdr-studio-runtime.js` attaches to the active Three.js city scene and provides the touch-sized scene tree, transform inspector, project library, primitive editor, physics test mode and imported GLB assets.
+- The local project library stores up to 10 named scene snapshots (aggregate 3 MB cap) with explicit create/open/delete controls and replacement warnings for unsaved edits; full `.mdrgame` export retains GLB binaries.
 - `mdr-glb-loader.js` validates self-contained GLB 2.0 chunks/accessors and builds static meshes using a narrow engine constructor API. It supports triangle primitives, node hierarchy, transforms, common vertex attributes, PBR materials and embedded PNG/JPEG/WebP textures.
 - `mdr-asset-store.js` persists binary GLB files in IndexedDB; scene JSON stores asset IDs and object transforms, not the binary payload.
 
@@ -20,7 +21,7 @@
 - The `PT.editorAddPrimitive(type, spec)` bridge creates editor primitives using the bundled Three.js constructors. The 2.3.0 `PT.editorThreeAPI()` bridge exposes only Group, Mesh, BufferGeometry, Float32BufferAttribute, MeshStandardMaterial, Texture, Color and Matrix4 constructors to the GLB adapter. This avoids exposing the full internal Three.js namespace.
 - Editor objects supported: box, sphere, cylinder, directional light and GLB model roots. The runtime maintains its own collection rather than assuming the game world has a `sceneObjects` property.
 - Scene data can persist optional validated physics settings per object (static, dynamic or kinematic; box/sphere collider; bounded mass, friction and restitution). The editor's physics test adds those bodies to the engine world, locks editing while running, and restores saved transforms when stopped.
-- Object selection uses an editor dropdown; transforms include X/Z movement, Y rotation and uniform scale.
+- Object selection uses a generated, text-only scene tree; the inspector edits position, Euler rotation and scale numerically. Physics body type and mass persist with the scene; the test mode locks project edits until stop restores transforms.
 
 ## Scene data format
 A project is JSON with `schema: "mdr-scene"`, `version: 3`, `name`, and an `objects` array. Versions 1 and 2 migrate to version 3. Each object stores ID, type, name, position, rotation, scale and color; GLB objects also store a local asset ID and file name. The core rejects duplicate IDs, unsupported types, invalid vectors, more than 500 objects and scene JSON over 2 MB. Versions 1 and 2 migrate to version 3 during parsing.

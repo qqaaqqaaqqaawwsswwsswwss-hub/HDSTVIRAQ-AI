@@ -4,6 +4,9 @@
   const Core = window.MDRStudioCore;
   if (!Core) return;
   const KEY = "mdr.studio.project.v3";
+  const PROJECTS_KEY = "mdr.studio.projects.v1";
+  const MAX_SAVED_PROJECTS = 10, MAX_LIBRARY_CHARS = 3_000_000;
+  let projectId = null, projectName = "مشروع جديد", isDirty = false;
   let active = null, panel = null, selectedId = null, objects = [];
   let physicsBodies = new Map();
   let aiImage = null, aiController = null, aiModelUrl = null;
@@ -13,10 +16,10 @@
   .mdr2-studio *{box-sizing:border-box}.mdr2-studio-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-weight:800;color:#ffca68}
   .mdr2-studio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.mdr2-studio button,.mdr2-studio select{min-height:35px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;padding:6px 7px;font:600 11px system-ui;cursor:pointer}
   .mdr2-studio button:disabled{opacity:.5;cursor:wait}.mdr2-studio button.primary{background:#ffb020;color:#1b1509;border-color:#ffca68}.mdr2-studio .wide{grid-column:1/-1}
-  .mdr2-studio .scene-tree{display:grid;gap:3px;max-height:124px;overflow:auto;padding:2px;border:1px solid #ffffff12;border-radius:9px;background:#090d14}.mdr2-studio .scene-node{display:flex;align-items:center;gap:8px;width:100%;min-height:34px!important;text-align:right!important;background:transparent!important;border-color:transparent!important;color:#cbd6e6!important;font-weight:600!important}.mdr2-studio .scene-node[aria-pressed="true"]{background:#ffb02020!important;border-color:#ffb02065!important;color:#ffcf78!important}.mdr2-studio .scene-node-icon{width:20px;text-align:center}.mdr2-studio .physics-setting{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:7px 9px;border:1px solid #ffffff16;border-radius:9px;background:#111824;color:#a9b9cc;font-size:11px}.mdr2-studio .physics-setting select,.mdr2-studio .physics-setting input{min-height:36px;max-width:145px;padding:5px 10px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;font:600 11px system-ui}.mdr2-studio .physics-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}.mdr2-studio .physics-actions button{min-height:40px}.mdr2-studio.physics-running{border-color:#35e0a1aa;box-shadow:0 0 0 1px #35e0a122,0 12px 34px #0008}.mdr2-studio .inspector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.mdr2-studio .inspector-field{min-width:0;color:#9fb0c6;font-size:9px}.mdr2-studio .inspector-field span{display:block;margin:0 3px 3px}.mdr2-studio .inspector-field input{width:100%;min-width:0;min-height:38px;border:1px solid #ffffff20;border-radius:7px;background:#111824;color:#f2f5fa;padding:5px;text-align:center;direction:ltr;font:12px ui-monospace,monospace}.mdr2-studio .inspector-field input:disabled{opacity:.45}.mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
+  .mdr2-studio .project-dock{padding:8px;margin:5px 0;border:1px solid #ffffff18;border-radius:10px;background:#0d131d}.mdr2-studio .project-name{width:100%;min-height:38px;margin:4px 0;padding:7px 10px;border:1px solid #ffffff20;border-radius:8px;background:#111824;color:#f2f5fa;font:12px system-ui;direction:rtl}.mdr2-studio .project-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}.mdr2-studio .project-actions button{min-height:38px}.mdr2-studio .scene-tree{display:grid;gap:3px;max-height:124px;overflow:auto;padding:2px;border:1px solid #ffffff12;border-radius:9px;background:#090d14}.mdr2-studio .scene-node{display:flex;align-items:center;gap:8px;width:100%;min-height:34px!important;text-align:right!important;background:transparent!important;border-color:transparent!important;color:#cbd6e6!important;font-weight:600!important}.mdr2-studio .scene-node[aria-pressed="true"]{background:#ffb02020!important;border-color:#ffb02065!important;color:#ffcf78!important}.mdr2-studio .scene-node-icon{width:20px;text-align:center}.mdr2-studio .physics-setting{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:7px 9px;border:1px solid #ffffff16;border-radius:9px;background:#111824;color:#a9b9cc;font-size:11px}.mdr2-studio .physics-setting select,.mdr2-studio .physics-setting input{min-height:36px;max-width:145px;padding:5px 10px;border:1px solid #ffffff20;border-radius:8px;background:#202938;color:#f2f5fa;font:600 11px system-ui}.mdr2-studio .physics-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}.mdr2-studio .physics-actions button{min-height:40px}.mdr2-studio.physics-running{border-color:#35e0a1aa;box-shadow:0 0 0 1px #35e0a122,0 12px 34px #0008}.mdr2-studio .inspector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.mdr2-studio .inspector-field{min-width:0;color:#9fb0c6;font-size:9px}.mdr2-studio .inspector-field span{display:block;margin:0 3px 3px}.mdr2-studio .inspector-field input{width:100%;min-width:0;min-height:38px;border:1px solid #ffffff20;border-radius:7px;background:#111824;color:#f2f5fa;padding:5px;text-align:center;direction:ltr;font:12px ui-monospace,monospace}.mdr2-studio .inspector-field input:disabled{opacity:.45}.mdr2-studio .dock-label{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 5px;color:#a9b9cc;font-size:10px;font-weight:800;letter-spacing:.04em}.mdr2-studio .dock-count{color:#ffca68;font-variant-numeric:tabular-nums}.mdr2-studio .status{margin-top:8px;color:#9fb0c6;font-size:10px;min-height:16px;overflow-wrap:anywhere}.mdr2-studio .status.error{color:#ff8585}.mdr2-studio .selected{display:block;width:100%;margin:6px 0}
   .mdr2-ai,.mdr2-assets{border-top:1px solid #ffffff24;margin-top:9px;padding-top:8px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{width:100%;max-width:100%;margin:5px 0;color:#dce6f4;font:10px system-ui}
   .mdr2-ai .ai-preview{display:none;width:100%;max-height:110px;object-fit:contain;border-radius:8px;background:#101722;margin:5px 0}.mdr2-ai .ai-note,.mdr2-assets .asset-note{font-size:9px;color:#aab9cc;line-height:1.5}.mdr2-ai button,.mdr2-assets button{width:100%;margin-top:5px}.mdr2-ai .ai-result{display:none;color:#a9e7b5;overflow-wrap:anywhere;font-size:10px}
-  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .inspector-field input{min-height:42px;font-size:13px}.mdr2-studio .physics-setting select,.mdr2-studio .physics-actions button{min-height:44px}.mdr2-studio .scene-tree{max-height:100px}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
+  @media(max-width:720px){.mdr2-studio{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);inset-inline:8px;width:auto;max-height:min(46vh,420px);padding:10px 12px;border-radius:16px;overscroll-behavior:contain}.mdr2-studio-head{position:sticky;top:-10px;z-index:2;margin:-10px -12px 8px;padding:10px 12px;background:rgba(9,13,20,.98);border-bottom:1px solid #ffffff20;border-radius:16px 16px 0 0}.mdr2-studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.mdr2-studio button,.mdr2-studio select{min-height:42px;padding:7px 5px;font-size:11px;touch-action:manipulation}.mdr2-studio .inspector-field input{min-height:42px;font-size:13px}.mdr2-studio .physics-setting select,.mdr2-studio .physics-actions button,.mdr2-studio .project-actions button,.mdr2-studio .project-name{min-height:44px}.mdr2-studio .scene-tree{max-height:100px}.mdr2-studio .wide{grid-column:1/-1}.mdr2-studio .selected{min-height:42px}.mdr2-studio .status{font-size:11px}.mdr2-ai input[type=password],.mdr2-ai input[type=file]{min-height:42px;font-size:12px}}
   `;
   document.head.appendChild(style);
 
@@ -38,7 +41,7 @@
     return spec;
   }
   function sync() {
-    return Core.validateProject({ schema: "mdr-scene", version: Core.VERSION, name: "MDR Mobile Scene", objects: objects.map(specFromObject) });
+    return Core.validateProject({ schema: "mdr-scene", version: Core.VERSION, name: projectName, objects: objects.map(specFromObject) });
   }
   function refreshList() {
     if (!panel) return;
@@ -81,7 +84,7 @@
     const spec = Core.normalizeObject({ ...data, type, id: data.id || ("mdr-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8)) });
     const object = active.editorAddPrimitive(spec.type, spec);
     if (spec.physics) object.userData.mdrPhysics = { ...spec.physics };
-    objects.push(object); selectedId = spec.id; updateSelection(); say("تمت إضافة " + spec.name); return object;
+    objects.push(object); selectedId = spec.id; isDirty = true; updateSelection(); say("تمت إضافة " + spec.name); return object;
   }
   function disposeObject(object) {
     if (!object) return;
@@ -110,9 +113,89 @@
     if (active) active._mdrEditorObjects = [];
     selectedId = null; updateSelection();
   }
+  function savedProjects() {
+    try {
+      const raw = localStorage.getItem(PROJECTS_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      let chars = 0;
+      return parsed.filter(record => {
+        if (!record || typeof record !== "object" || !/^scene-[a-z0-9-]{8,80}$/.test(record.id || "") || typeof record.data !== "string" || record.data.length > Core.MAX_JSON_CHARS) return false;
+        chars += record.data.length;
+        return chars <= MAX_LIBRARY_CHARS;
+      }).slice(0, MAX_SAVED_PROJECTS);
+    } catch (_) { return []; }
+  }
+  function refreshProjectLibrary() {
+    if (!panel) return;
+    const select = panel.querySelector(".project-list");
+    if (!select) return;
+    select.replaceChildren();
+    const placeholder = document.createElement("option"); placeholder.value = ""; placeholder.textContent = "اختر مشروعاً محفوظاً"; select.appendChild(placeholder);
+    for (const record of savedProjects()) {
+      let name = record.name || "مشروع بدون اسم";
+      try { name = Core.parse(record.data).name; } catch (_) { /* corrupt entry remains visible so it can be removed */ }
+      const option = document.createElement("option"); option.value = record.id; option.textContent = name; select.appendChild(option);
+    }
+    select.value = projectId || "";
+    const nameInput = panel.querySelector(".project-name");
+    if (nameInput && nameInput.value !== projectName) nameInput.value = projectName;
+  }
   function save() {
-    try { localStorage.setItem(KEY, Core.serialize(sync())); say("تم حفظ المشهد والأصول المرتبطة به على هذا الجهاز"); }
-    catch (error) { say("تعذر الحفظ: " + error.message, true); }
+    try {
+      const nameInput = panel && panel.querySelector(".project-name");
+      projectName = String(nameInput && nameInput.value || projectName || "مشروع جديد").trim().slice(0, 80) || "مشروع جديد";
+      const data = Core.serialize(sync());
+      const records = savedProjects();
+      const id = projectId || (`scene-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
+      const index = records.findIndex(record => record.id === id);
+      if (index < 0 && records.length >= MAX_SAVED_PROJECTS) throw new Error("مكتبة المشاريع ممتلئة؛ احذف مشروعاً قديماً أولاً");
+      const entry = { id, name: projectName, updatedAt: Date.now(), data };
+      if (index >= 0) records[index] = entry; else records.unshift(entry);
+      records.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      if (records.reduce((sum, record) => sum + record.data.length, 0) > MAX_LIBRARY_CHARS) throw new Error("وصلت مكتبة المشاريع إلى حد التخزين المحلي؛ صدّر بعض المشاريع كحزمة");
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(records));
+      localStorage.setItem(KEY, data);
+      projectId = id; isDirty = false; refreshProjectLibrary();
+      say(`تم حفظ «${projectName}» محلياً — ${objects.length} عنصر`);
+    } catch (error) { say("تعذر الحفظ: " + (error.message || String(error)), true); }
+  }
+  async function load() {
+    try {
+      const select = panel && panel.querySelector(".project-list");
+      const chosenId = select && select.value || projectId;
+      const entry = chosenId && savedProjects().find(record => record.id === chosenId);
+      if (entry) { const loaded = await applyProject(Core.parse(entry.data), entry.id); if (loaded) say(`تم فتح «${projectName}»`); return; }
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return say("لا يوجد مشروع محفوظ؛ أنشئ مشروعاً أو احفظ المشهد أولاً");
+      const loaded = await applyProject(Core.parse(raw), null);
+      if (loaded) say("تم تحميل آخر مشهد محفوظ");
+    } catch (error) { say("فشل التحميل: " + error.message, true); }
+  }
+  function newProject() {
+    if (!window.confirm(isDirty ? "لديك تغييرات غير محفوظة. إنشاء مشروع فارغ والتخلي عنها؟" : "إنشاء مشروع فارغ جديد؟")) return;
+    clearObjects(); projectId = null; projectName = "مشروع جديد"; isDirty = false; refreshProjectLibrary(); updateSelection();
+    say("مشروع جديد جاهز — أضف عناصر ثم احفظه باسم تختاره");
+  }
+  function deleteSavedProject() {
+    const select = panel && panel.querySelector(".project-list");
+    const id = select && select.value || projectId;
+    if (!id) return say("اختر مشروعاً محفوظاً لحذفه", true);
+    const records = savedProjects(), entry = records.find(record => record.id === id);
+    if (!entry) return say("المشروع المحفوظ غير موجود", true);
+    if (!window.confirm(`حذف المشروع «${entry.name || "بدون اسم"}» من هذا الجهاز؟`)) return;
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(records.filter(record => record.id !== id)));
+    if (projectId === id) { projectId = null; projectName = "مشروع جديد"; }
+    refreshProjectLibrary(); say("حُذف المشروع المحفوظ؛ ملفات GLB المحلية لم تُحذف");
+  }
+  async function exportPackage() {
+    try {
+      if (!window.MDRExporter || typeof window.MDRExporter.exportProjectPackage !== "function") throw new Error("أداة حزم المشاريع غير جاهزة");
+      projectName = String(panel.querySelector(".project-name").value || projectName).trim().slice(0, 80) || "مشروع جديد";
+      const result = await window.MDRExporter.exportProjectPackage();
+      say(`تم تصدير حزمة «${projectName}» — ${result.objects} عنصر و${result.assets} أصل`);
+    } catch (error) { say("فشل تصدير الحزمة: " + (error.message || String(error)), true); }
   }
   async function prepareProjectAssets(data) {
     const entries = new Map();
@@ -135,10 +218,13 @@
     if (spec.physics) object.userData.mdrPhysics = { ...spec.physics };
     return object;
   }
-  async function applyProject(data) {
+  async function applyProject(data, loadedProjectId = null) {
     // Validate asset availability and GLB structure first, so a missing/corrupt asset
     // cannot erase the scene that is currently open.
-    const assetEntries = await prepareProjectAssets(data);
+    const validated = Core.validateProject(data);
+    const assetEntries = await prepareProjectAssets(validated);
+    if (isDirty && !window.confirm("توجد تغييرات غير محفوظة. استبدال المشهد الحالي؟")) return false;
+    data = validated;
     clearObjects();
     try {
       for (const raw of data.objects) {
@@ -148,21 +234,18 @@
         } else addPrimitive(item.type, item);
       }
       if (active) active._mdrEditorObjects = objects.slice();
-      updateSelection(); say("تم تحميل " + data.objects.length + " عنصر من المشروع");
+      projectName = data.name || "مشروع جديد"; projectId = loadedProjectId; isDirty = false; refreshProjectLibrary();
+      updateSelection(); say("تم تحميل " + data.objects.length + " عنصر من المشروع"); return true;
     } catch (error) {
-      clearObjects();
+      clearObjects(); isDirty = true;
       throw error;
     }
-  }
-  async function load() {
-    try { const raw = localStorage.getItem(KEY) || localStorage.getItem("mdr.studio.project.v2"); if (!raw) return say("لا يوجد مشروع محفوظ"); await applyProject(Core.parse(raw)); }
-    catch (error) { say("فشل التحميل: " + error.message, true); }
   }
   function importSceneFile(file) {
     if (!file) return;
     if (file.size > Core.MAX_JSON_CHARS) return say("ملف المشهد أكبر من 2MB", true);
     const reader = new FileReader();
-    reader.onload = async () => { try { await applyProject(Core.parse(String(reader.result || ""))); } catch (error) { say("فشل استيراد المشهد: " + error.message, true); } };
+    reader.onload = async () => { try { const loaded = await applyProject(Core.parse(String(reader.result || ""))); if (!loaded) say("أُلغي استيراد المشهد"); } catch (error) { say("فشل استيراد المشهد: " + error.message, true); } };
     reader.onerror = () => say("تعذرت قراءة الملف", true);
     reader.readAsText(file);
   }
@@ -197,7 +280,7 @@
       const object = await window.MDRGLB.loadGLB(active, parsed, { id, assetId, name: fileName, fileName });
       object.position.set(0, 0, 0);
       object.userData.mdrAssetId = assetId; object.userData.mdrFileName = fileName;
-      objects.push(object); selectedId = id; active._mdrEditorObjects = objects.slice(); updateSelection();
+      objects.push(object); selectedId = id; active._mdrEditorObjects = objects.slice(); isDirty = true; updateSelection();
       const warnings = object.userData.mdrWarnings || [];
       say("تم استيراد " + fileName + (warnings.length ? " — " + warnings.join("؛ ") : ""));
       return object;
@@ -304,7 +387,7 @@
       panel.querySelector('[data-action="physics-start"]').disabled = true;
       panel.querySelector('[data-action="physics-stop"]').disabled = false;
       panel.querySelectorAll("[data-inspector], [data-physics-type], [data-physics-mass]").forEach(field => { field.disabled = true; });
-      panel.querySelectorAll(".mdr2-studio-grid button").forEach(button => { button.disabled = true; });
+      panel.querySelectorAll(".mdr2-studio-grid button, .project-actions button, .project-name, .project-list").forEach(control => { control.disabled = true; });
       say(`بدأ اختبار الفيزياء — ${physicsBodies.size} جسم. الإيقاف يعيد المشهد لوضع التحرير.`);
     } catch (error) {
       stopPhysicsTest(false);
@@ -327,7 +410,7 @@
       if (stop) stop.disabled = true;
       panel.querySelectorAll("[data-inspector], [data-physics-type]").forEach(field => { field.disabled = !selected(); });
       const mass = panel.querySelector("[data-physics-mass]"); if (mass) mass.disabled = !selected() || !selected().userData.mdrPhysics;
-      panel.querySelectorAll(".mdr2-studio-grid button").forEach(button => { button.disabled = false; });
+      panel.querySelectorAll(".mdr2-studio-grid button, .project-actions button, .project-name, .project-list").forEach(control => { control.disabled = false; });
     }
     updateSelection();
     if (report) say("توقف الاختبار؛ أُعيدت الأجسام إلى مواضع التحرير.");
@@ -338,7 +421,7 @@
     if (action === "z-") object.position.z -= 1; if (action === "z+") object.position.z += 1;
     if (action === "rotate") object.rotation.y += Math.PI / 12;
     if (action === "scale+") object.scale.multiplyScalar(1.1); if (action === "scale-") object.scale.multiplyScalar(.9);
-    updateSelection();
+    isDirty = true; updateSelection();
     say("تم تعديل " + object.name);
   }
   function remove() {
@@ -346,12 +429,13 @@
     const assetId = object.userData.mdrAssetId;
     disposeObject(object); objects = objects.filter(item => item !== object);
     if (active) active._mdrEditorObjects = objects.slice();
-    selectedId = null; updateSelection(); say("تم حذف العنصر");
+    selectedId = null; isDirty = true; updateSelection(); say("تم حذف العنصر");
     if (assetId && window.MDRAssetStore) window.MDRAssetStore.remove(assetId).catch(error => say("حُذف المجسم، لكن تعذر حذف ملف الأصل: " + error.message, true));
   }
   function unmount() {
     if (aiController) aiController.abort();
     if (physicsBodies.size) stopPhysicsTest(false);
+    if (isDirty && active && panel) save();
     if (panel) {
       const preview = panel.querySelector(".ai-preview"); if (preview && preview.dataset.url) URL.revokeObjectURL(preview.dataset.url);
       panel.remove();
@@ -366,6 +450,12 @@
     panel = document.createElement("section"); panel.className = "mdr2-studio";
     panel.innerHTML = `
       <div class="mdr2-studio-head"><span>🧰 محرر المشهد · MDR</span><button type="button" data-action="collapse">طي</button></div>
+      <div class="project-dock">
+        <div class="dock-label"><span>المشروع المحلي</span><span class="project-counter">حد المكتبة 10</span></div>
+        <input class="project-name" type="text" maxlength="80" value="مشروع جديد" aria-label="اسم المشروع" placeholder="اسم المشروع"/>
+        <select class="project-list" aria-label="المشاريع المحفوظة"></select>
+        <div class="project-actions"><button class="primary" data-action="save">حفظ المشروع</button><button data-action="load">فتح المحدد</button><button data-action="new-project">مشروع جديد</button><button data-action="delete-project">حذف المحدد</button><button class="wide" data-action="export-package">تصدير حزمة مشروع كاملة</button></div>
+      </div>
       <div class="dock-label"><span>شجرة المشهد</span><span class="dock-count">0 عنصر</span></div>
       <div class="scene-tree" role="tree" aria-label="عناصر المشهد"></div>
       <div class="dock-label"><span>المفتش · تحويل العنصر</span><span class="selected-label">لم يُحدد عنصر</span></div>
@@ -380,7 +470,7 @@
         <button class="wide" data-add="directionalLight">＋ ضوء اتجاهي</button>
         <button data-transform="x-">X −</button><button data-transform="x+">X +</button><button data-transform="z-">Z −</button><button data-transform="z+">Z +</button>
         <button data-transform="rotate">دوران</button><button data-action="delete">حذف</button><button data-transform="scale-">تصغير</button><button data-transform="scale+">تكبير</button>
-        <button data-action="save">حفظ</button><button data-action="load">تحميل</button><button data-action="import-json">استيراد JSON</button>
+        <button data-action="import-json">استيراد JSON</button>
         <button class="wide" data-action="import-package">استيراد مشروع .mdrgame</button>
         <button class="primary wide" data-action="import-glb">＋ استيراد مجسم GLB</button><button data-action="export-glb" class="wide">تنزيل GLB المحدد</button><button data-action="export" class="wide">تصدير بيانات المشهد</button>
       </div>
@@ -399,7 +489,10 @@
         <div class="ai-result"></div><div class="status ai-status">ارفع صورة لبدء التحويل</div>
       </div>
       <div class="status status-main">جاهز — أضف مجسماً أو استورد GLB</div>`;
-    frame.appendChild(panel); refreshList();
+    frame.appendChild(panel); refreshList(); refreshProjectLibrary();
+    panel.addEventListener("input", event => {
+      if (event.target.matches(".project-name")) projectName = String(event.target.value).slice(0, 80);
+    });
     panel.addEventListener("change", event => {
       if (event.target.matches(".ai-file")) chooseAIImage(event.target.files && event.target.files[0]);
       else if (event.target.matches("[data-physics-type]")) {
@@ -407,14 +500,14 @@
         const type = event.target.value;
         if (type === "none") delete object.userData.mdrPhysics;
         else object.userData.mdrPhysics = Core.normalizeObject({ ...specFromObject(object), physics: { ...(object.userData.mdrPhysics || {}), type } }).physics;
-        updateSelection();
+        isDirty = true; updateSelection();
         say(type === "none" ? "أزيل إعداد الفيزياء" : `تم تعيين الجسم الفيزيائي: ${type}`);
       } else if (event.target.matches("[data-physics-mass]")) {
         const object = selected(); if (!object || physicsBodies.size || !object.userData.mdrPhysics) return;
         const mass = Number(event.target.value);
         if (!Number.isFinite(mass)) return say("أدخل كتلة رقمية صحيحة", true);
         object.userData.mdrPhysics = Core.normalizeObject({ ...specFromObject(object), physics: { ...object.userData.mdrPhysics, mass } }).physics;
-        event.target.value = String(object.userData.mdrPhysics.mass);
+        isDirty = true; event.target.value = String(object.userData.mdrPhysics.mass);
         say(`كتلة ${object.name}: ${object.userData.mdrPhysics.mass} كغم`);
       }
     });
@@ -432,7 +525,7 @@
       } else if (axis === "scale") {
         const next = object.scale.toArray(); next["xyz".indexOf(component)] = Math.max(.05, Math.min(50, value)); object.scale.fromArray(next);
       }
-      say("تم تحديث " + object.name);
+      isDirty = true; say("تم تحديث " + object.name);
     });
     panel.addEventListener("click", event => {
       const button = event.target.closest("button"); if (!button) return;
@@ -443,6 +536,9 @@
       else if (button.dataset.transform) transform(button.dataset.transform);
       else if (button.dataset.action === "save") save();
       else if (button.dataset.action === "load") load();
+      else if (button.dataset.action === "new-project") newProject();
+      else if (button.dataset.action === "delete-project") deleteSavedProject();
+      else if (button.dataset.action === "export-package") exportPackage();
       else if (button.dataset.action === "export") exportFile();
       else if (button.dataset.action === "export-glb") exportSelectedGLB();
       else if (button.dataset.action === "delete") remove();
@@ -492,8 +588,8 @@
         if (!item || !window.MDRAssetStore.validId(item.id) || !(item.blob instanceof Blob)) throw new Error("أحد أصول المشروع غير صالح");
         await window.MDRAssetStore.put(item.id, item.blob, item.name);
       }
-      await applyProject(Core.validateProject(project));
-      return { objects: objects.length, assets: assets.length };
+      const loaded = await applyProject(Core.validateProject(project));
+      return loaded ? { objects: objects.length, assets: assets.length } : { cancelled: true, objects: 0, assets: 0 };
     }
   });
 
