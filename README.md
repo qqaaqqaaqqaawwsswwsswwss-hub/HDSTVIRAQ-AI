@@ -29,7 +29,7 @@ npm run verify
 ./gradlew assembleDebug
 ```
 
-المخرج: `app/build/outputs/apk/debug/app-debug.apk`. كما يبني GitHub Actions APK تجريبياً ويرفعه كـ artifact عند دفع التغييرات؛ لا يتضمن هذا APK توقيع نشر Play Store.
+المخرج: `app/build/outputs/apk/debug/app-debug.apk`. هذا APK تجريبي غير موقع للنشر في Play Store. لم يُضَف سير GitHub Actions بعد لأن اتصال GitHub الحالي لا يملك صلاحية كتابة ملفات workflows.
 
 ## النشر
 

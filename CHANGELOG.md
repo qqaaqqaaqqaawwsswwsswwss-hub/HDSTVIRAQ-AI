@@ -5,8 +5,8 @@
 - Promoted Android/Web metadata to 3.0.3 / versionCode 15 and aligned the page title and release badge.
 - Refined touch, safe-area, landscape and reduced-motion support for mobile browsers.
 - Added dependency-free static web output and Vercel configuration.
-- Added GitHub Actions workflow to build and publish a downloadable debug APK artifact.
-- Build/device verification is pending CI and real-device testing.
+- Prepared the release for an automated APK build; adding a GitHub Actions workflow is pending because the current GitHub connection lacks workflow-write permission.
+- APK build/device verification is pending a JDK + Android SDK build environment and real-device testing.
 
 ## 3.0.2 — Android build configuration repair
 
