@@ -7,6 +7,6 @@
 - Standard remains on the existing MDR physics implementation; the hosted web app uses the Pro edition by default.
 
 ## Verification
-- Source and Node suites pass locally; Android build is delegated to GitHub Actions.
+- Source and Node suites pass locally; the GitHub Actions build recipe is in `ci/android-apk.yml` but is not active until workflow-write permission is granted.
 - The local sandbox has no JDK or Android SDK, so APK assembly cannot run here.
 - Physical installation/performance on Android devices is not verified until the CI artifacts are installed and tested.

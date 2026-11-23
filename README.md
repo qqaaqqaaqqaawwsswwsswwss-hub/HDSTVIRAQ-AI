@@ -32,7 +32,7 @@ npm run verify
 - **Standard:** الإصدار القياسي بمحرك MDR الحالي.
 - **Pro:** يضيف محرك الفيزياء ثلاثي الأبعاد `cannon-es`، إصدار 0.20.0 بترخيص MIT، ويحمّله عند الطلب.
 
-المخرجات: `app/build/outputs/apk/standard/debug/app-standard-debug.apk` و`app/build/outputs/apk/pro/debug/app-pro-debug.apk`. كلاهما debug APK غير موقّع للنشر في Play Store. GitHub Actions يختبر المصدر ويبني النسختين ويرفعهما كملفين منفصلين عند دفع الفرع.
+المخرجات: `app/build/outputs/apk/standard/debug/app-standard-debug.apk` و`app/build/outputs/apk/pro/debug/app-pro-debug.apk`. كلاهما debug APK غير موقّع للنشر في Play Store. قالب البناء جاهز في `ci/android-apk.yml` لبناء النسختين كملفين منفصلين؛ تفعيله يتطلب إضافة الملف إلى `.github/workflows/` بعد منح اتصال GitHub صلاحية `workflows`.
 
 ## حقوق المكونات
 
@@ -41,9 +41,9 @@ npm run verify
 
 ## النشر
 
-- **GitHub Pages:** شغّل `npm run build:pages` لتحديث `docs/` ثم ادفع الفرع؛ مصدر النشر هو مجلد `docs` (تفعيل GitHub Pages من إعدادات المستودع يحتاج صلاحيات Pages).
+- **GitHub Pages:** شغّل `npm run build:pages` لتحديث `docs/` ثم ادفع الفرع؛ الملفات جاهزة للنشر من مجلد `docs`، لكن تفعيل Pages يحتاج صلاحية Pages في إعدادات المستودع.
 - **Vercel:** `vercel.json` يبني نسخة الويب إلى `dist/`؛ يتطلب ربط حساب GitHub داخل Vercel أولاً.
-- **GitHub Actions:** يبني نسختَي Standard وPro ويرفعهما كـ artifacts منفصلين بعد نجاح الاختبارات.
+- **قالب GitHub Actions:** موجود في `ci/android-apk.yml` لكنه غير نشط حتى يسمح اتصال GitHub بكتابة workflows.
 
 ## ملاحظات الأمان والحدود
 
