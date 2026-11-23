@@ -1,0 +1,52 @@
+/* MDR mobile workspace: thumb-sized navigation, stacked tools and safe-area spacing. */
+:root{--mdr-safe-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select,textarea{max-width:100%;}
+@media(max-width:720px){
+  html,body,#root{width:100%;height:100%;height:100dvh;overflow:hidden}
+  .app-shell{height:100dvh;width:100vw;min-height:0;overflow:hidden}
+  .topbar{height:58px;min-height:58px;padding:7px 11px;gap:8px;flex-shrink:0}
+  .brand{gap:8px;min-width:0}.brand-mark{width:36px;height:36px;border-radius:10px;font-size:11px}.brand-name{font-size:15px;white-space:nowrap}.brand-name small{font-size:9px;letter-spacing:0;white-space:normal;line-height:1.25;max-width:180px}
+  .status-pill{display:none!important}
+  .topnav{position:fixed;z-index:125;inset-inline:0;bottom:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:6px 9px calc(6px + var(--mdr-safe-bottom));border-top:1px solid rgba(255,255,255,.1);background:rgba(9,12,18,.96);backdrop-filter:blur(18px)}
+  .topnav-btn{min-width:0;min-height:48px;padding:7px 4px;border-radius:11px;font-size:11px;white-space:normal;line-height:1.25}
+  .main-area{display:block!important;position:relative;min-height:0;height:calc(100% - 58px);overflow:hidden}
+  .side-rail{display:none!important}
+  .nest-stage{height:100%;min-height:0;padding:43px 9px calc(72px + var(--mdr-safe-bottom));border:0;border-radius:0;overflow:auto;overscroll-behavior:contain}
+  .nest-stage:before{display:none}.nest-chip{top:8px;right:10px;left:10px;max-width:calc(100% - 20px);font-size:10px}
+  .content-area{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  .page-pad{padding:12px 9px 85px}.h1{font-size:25px}.h1-sm{font-size:20px}.lede{font-size:13px;line-height:1.7}
+  .grid-2,.grid-3{grid-template-columns:minmax(0,1fr)!important;gap:10px}.tile,.card{padding:13px!important;border-radius:13px}
+  .tabs{gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}.tab{min-height:40px;flex:0 0 auto;font-size:11px;padding:8px 12px}
+  .tbl{font-size:11px;display:block;overflow-x:auto;white-space:nowrap}.tbl th,.tbl td{padding:8px}
+  .btn,.btn-primary,.btn-sm,.tab,.game-control-btn{min-height:42px}
+  .game-frame{min-height:48vh;min-height:48dvh;flex:0 0 48vh;border-radius:13px!important}
+  .nest-stage > div:has(.game-frame){display:flex!important;flex-direction:column!important;grid-template-columns:minmax(0,1fr)!important;height:auto!important;min-height:100%;overflow:visible!important;gap:10px}
+  .game-frame .hud{padding:8px}.hud-title{font-size:15px}.hud-card{padding:7px 9px;font-size:10px}.hud-sub{font-size:8px;letter-spacing:1.2px}
+  .game-controls{position:relative!important;inset:auto!important;display:flex;flex-wrap:wrap;gap:5px;max-width:78vw}.game-control-btn{font-size:10px;padding:7px 8px}
+  .game-tool-panel{width:100%;min-width:0;max-height:none!important;min-height:270px;padding:12px!important;border:1px solid var(--line-2)!important;border-radius:14px!important;overflow:visible!important}
+  .console-input-row{display:flex;flex-direction:column;gap:7px}.console-input-row textarea{min-height:84px;width:100%}.console-input-row button{width:100%}
+  .mdr2-studio{top:auto!important;bottom:8px!important;inset-inline:8px!important;width:auto!important;max-height:min(38vh,310px)!important;padding:8px!important;overflow:auto!important;border-radius:13px!important}
+  .mdr2-studio .mdr2-studio-grid{gap:5px}.mdr2-studio button,.mdr2-studio select{min-height:39px!important;font-size:11px!important}
+  input,select,textarea{font-size:16px!important;min-height:42px}
+}
+@media(min-width:721px) and (max-width:980px){.main-area{grid-template-columns:190px minmax(0,1fr)}.topbar{padding-inline:16px}.game-tool-panel{width:280px}}
+
+/* 3.0.3 touch polish: clear focus, safe-area spacing, and small-landscape recovery. */
+:focus-visible{outline:2px solid var(--amber,#ffb020)!important;outline-offset:3px!important}
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+@media(max-width:720px){
+  .topbar{padding-top:max(7px,env(safe-area-inset-top,0px))}
+  .topnav{padding-bottom:max(6px,calc(6px + env(safe-area-inset-bottom,0px)))}
+  .topnav-btn,.btn,.btn-primary,.btn-sm,.game-control-btn{touch-action:manipulation}
+  .nest-stage{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))}
+  .mdr2-studio{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important}
+}
+@media(max-width:720px) and (orientation:landscape) and (max-height:520px){
+  .topbar{height:48px;min-height:48px}
+  .main-area{height:calc(100% - 48px)}
+  .game-frame{min-height:54dvh;flex-basis:54dvh}
+  .topnav-btn{min-height:40px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}

@@ -33,8 +33,9 @@ npm run verify
 
 ## النشر
 
-- **Vercel:** إعداد النشر في `vercel.json` يبني نسخة الويب من أصول Android ويخرجها إلى `dist/`.
-- **GitHub:** مصدر Android والويب والاختبارات وسير عمل APK محفوظة في هذا المستودع.
+- **GitHub Pages:** شغّل `npm run build:pages` لتحديث `docs/` ثم ادفع الفرع؛ مصدر النشر هو مجلد `docs`.
+- **Vercel:** `vercel.json` يبني نسخة الويب إلى `dist/`؛ يتطلب ربط حساب GitHub داخل Vercel أولاً.
+- **GitHub:** يحتوي الفرع على المصدر والاختبارات وقالب APK Android، لكن سير CI لم يُفعّل بعد لأن اتصال GitHub يفتقد صلاحية كتابة workflows.
 
 ## ملاحظات الأمان والحدود
 

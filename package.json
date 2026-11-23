@@ -6,6 +6,7 @@
   "scripts": {
     "build:web": "node scripts/build-web.cjs",
     "test": "node --test tools/tests/*.test.cjs",
-    "verify": "python3 tools/verify_source.py && npm test"
+    "verify": "python3 tools/verify_source.py && npm test",
+    "build:pages": "npm run build:web && node scripts/build-pages.cjs"
   }
 }
