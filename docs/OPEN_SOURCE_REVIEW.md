@@ -11,3 +11,8 @@ The Baghdad procedural layout, guarded conversion into the MDR scene schema, ins
 ## Integration rule
 
 New dependencies are only added after checking the upstream source, exact version, license text/SPDX identifier, asset terms and browser/mobile compatibility. When no license-clear regional code is suitable for a feature, implement the feature against MDR's documented local APIs rather than copying unlicensed code.
+
+## Licensed engine component integrated in 3.2.0
+
+- [pmndrs/cannon-es](https://github.com/pmndrs/cannon-es), version 0.20.0, distributed from npm as `cannon-es` under the MIT license. The exact license text is included at `third_party/CANNON-ES-LICENSE`. The adapter is isolated in `mdr-cannon-physics.mjs` and lazy-loaded by the Pro edition; it is not copied into Standard-specific source overrides.
+- This is a technically suitable open-source project, but it is not represented as Middle-East-origin. The regional candidate above was not integrated because GitHub reports no asserted license.

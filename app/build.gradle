@@ -7,12 +7,25 @@ android {
         applicationId 'com.mdr.app'
         minSdk 26
         targetSdk 35
-        versionCode 16
-        versionName "3.1.0"
+        versionCode 17
+        versionName "3.2.0"
     }
     buildFeatures {
         // AGP 8 disables BuildConfig generation by default. AppActivity uses BuildConfig.DEBUG.
         buildConfig true
+    }
+    flavorDimensions += 'edition'
+    productFlavors {
+        standard {
+            dimension 'edition'
+            applicationIdSuffix '.standard'
+            versionNameSuffix '-standard'
+        }
+        pro {
+            dimension 'edition'
+            applicationIdSuffix '.pro'
+            versionNameSuffix '-pro'
+        }
     }
     buildTypes {
         debug { applicationIdSuffix ".debug" }

@@ -8,9 +8,9 @@ const output = path.join(root, 'dist');
 
 test('web build includes the current mobile-first app and its local runtime assets', () => {
   const html = fs.readFileSync(path.join(output, 'index.html'), 'utf8');
-  assert.match(html, /MDR Platform 3\.1\.0/);
+  assert.match(html, /MDR Platform 3\.2\.0/);
   assert.match(html, /href="mdr-mobile\.css"/);
-  for (const file of ['mdr-mobile.css', 'mdr-mobile-ui.js', 'mdr-physics.js', 'mdr-game-bootstrap.js', 'mdr-pwa.js', 'manifest.webmanifest', 'sw.js']) {
+  for (const file of ['mdr-mobile.css', 'mdr-mobile-ui.js', 'mdr-physics.js', 'mdr-game-bootstrap.js', 'mdr-pwa.js', 'manifest.webmanifest', 'sw.js', 'cannon-es.mjs', 'mdr-cannon-physics.mjs', 'mdr-cannon-loader.js', 'mdr-edition.js']) {
     assert.ok(fs.existsSync(path.join(output, file)), `missing deployed asset: ${file}`);
   }
 });

@@ -88,7 +88,14 @@ public final class AppActivity extends Activity {
         });
         webView.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                return assetLoader.shouldInterceptRequest(request.getUrl());
+                WebResourceResponse response = assetLoader.shouldInterceptRequest(request.getUrl());
+                // Android's MIME table does not consistently recognize .mjs. ES modules
+                // require a JavaScript MIME type, so normalize this local asset response.
+                if (response != null && request.getUrl().getPath() != null
+                        && request.getUrl().getPath().endsWith(".mjs")) {
+                    return new WebResourceResponse("text/javascript", "UTF-8", response.getData());
+                }
+                return response;
             }
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();

@@ -57,3 +57,9 @@ The Studio runtime loads `mdr-ai3d.js`, a provider adapter for Meshy's asynchron
 - The Android WebView asset host explicitly skips PWA service-worker registration; the native host continues to use its local asset loader.
 - MDR NextGen's seeded Baghdad theme produces bounded primitive scene data and can import it through the existing MDR Studio package bridge after the user confirms replacing the open scene.
 - Regional open-source candidate review and license constraints are recorded in `OPEN_SOURCE_REVIEW.md`.
+
+
+## 3.2.0 optional Pro physics
+- Standard and Pro are separate Android product flavors with application-id suffixes; their release artifacts can be installed side-by-side.
+- Pro lazy-loads the MIT-licensed Cannon-es JavaScript physics runtime; the MIT notice is retained in the repository. The adapter caps bodies and simulation delta, exposes a fixed-step world, contacts, impulse helpers, and transforms bound to Three-style meshes.
+- Standard retains MDR's original dependency-light physics path. `MDR_EDITION` is selected by Gradle source-set assets; the hosted web build defaults to Pro.

@@ -21,9 +21,17 @@ test('offline cache and install prompt are local-only and are excluded from Andr
   const worker = fs.readFileSync(path.join(assets, 'sw.js'), 'utf8');
   assert.match(html, /rel="manifest" href="manifest\.webmanifest"/);
   assert.match(html, /src="mdr-pwa\.js"/);
+  assert.match(html, /MDR Platform — أدوات عربية لبناء العوالم ومشاريع التطبيقات/);
   assert.match(pwa, /appassets\.androidplatform\.net/);
   assert.match(pwa, /beforeinstallprompt/);
-  assert.match(worker, /mdr-platform-static-v3\.1\.0/);
+  assert.match(worker, /mdr-platform-static-v3\.2\.0/);
   execFileSync(process.execPath, ['--check', path.join(assets, 'mdr-pwa.js')]);
   execFileSync(process.execPath, ['--check', path.join(assets, 'sw.js')]);
+});
+
+test('offline precache includes the Pro physics runtime and pinned Cannon-es module', () => {
+  const worker = fs.readFileSync(path.join(assets, 'sw.js'), 'utf8');
+  for (const file of ['mdr-cannon-loader.js', 'mdr-cannon-physics.mjs', 'cannon-es.mjs', 'mdr-edition.js']) {
+    assert.ok(worker.includes(`'./${file}'`), `offline cache is missing ${file}`);
+  }
 });

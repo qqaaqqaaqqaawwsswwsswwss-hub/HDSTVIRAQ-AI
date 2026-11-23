@@ -1,13 +1,14 @@
 /* MDR offline shell. Keep the list local-only; user projects stay in browser storage. */
 'use strict';
-const CACHE_NAME = 'mdr-platform-static-v3.1.0';
+const CACHE_NAME = 'mdr-platform-static-v3.2.0';
 const PRECACHE = [
   './', './index.html', './manifest.webmanifest', './mdr-icon.svg',
   './mdr-zip-guard.js', './app-custom.js', './mdr-physics.js', './mdr-performance.js',
   './mdr-studio-core.js', './mdr-ai3d.js', './mdr-glb-loader.js', './mdr-asset-store.js',
   './mdr-studio-runtime.js', './mdr-quality-studio.js', './mdr-export.js',
   './mdr-mobile-ui.js', './mdr-quality-panel.js', './mdr-nextgen.js', './mdr-pwa.js',
-  './mdr-mobile.css', './mdr-quality-studio.css', './mdr-game-bootstrap.js'
+  './mdr-mobile.css', './mdr-quality-studio.css', './mdr-game-bootstrap.js', './mdr-edition.js',
+  './mdr-cannon-loader.js', './mdr-cannon-physics.mjs', './cannon-es.mjs'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));

@@ -1,12 +1,16 @@
 {
   "name": "mdr-platform",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": true,
-  "description": "MDR Platform — Arabic-first mobile 3D game engine and Android studio",
+  "description": "MDR Platform — Arabic-first mobile game engine, scene editor and Android app factory",
   "scripts": {
-    "build:web": "node scripts/build-web.cjs",
+    "build:web": "npm run vendor:physics && node scripts/build-web.cjs",
     "test": "node --test tools/tests/*.test.cjs",
     "verify": "python3 tools/verify_source.py && npm test",
-    "build:pages": "npm run build:web && node scripts/build-pages.cjs"
+    "build:pages": "npm run build:web && node scripts/build-pages.cjs",
+    "vendor:physics": "node scripts/vendor-physics.cjs"
+  },
+  "dependencies": {
+    "cannon-es": "0.20.0"
   }
 }

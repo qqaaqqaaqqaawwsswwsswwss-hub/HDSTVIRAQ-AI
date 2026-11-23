@@ -1,10 +1,10 @@
-# MDR Platform 3.1.0
+# MDR Platform 3.2.0
 
 منصة عربية لتجربة محرك ألعاب ثلاثي الأبعاد ومحرر المشاهد ومصنع مشاريع Android/WebView. الإصدار الحالي يضم مساحة عمل RTL، مدينة بغداد الإجرائية التي تُضاف مباشرةً للمشهد، وموقع قابل للتثبيت والعمل دون اتصال على الهاتف.
 
 ## تشغيل نسخة الويب محلياً
 
-يتطلب Node.js 18 أو أحدث. لا توجد تبعيات npm خارجية.
+يتطلب Node.js 18 أو أحدث. تبعيات npm مثبتة بإصدارات محددة في `package-lock.json`؛ `cannon-es` يُستخدم اختيارياً في Pro.
 
 ```sh
 npm run build:web
@@ -21,21 +21,29 @@ npm run verify
 
 يشغّل فحوصات المصدر واختبارات Node. هذه الاختبارات لا تعادل بناء Android أو اختباره على جهاز حقيقي.
 
-## بناء APK
+## نسختا APK
 
-يتطلب JDK 17 وAndroid SDK Platform 35 وBuild Tools 35.0.0. سكربت `gradlew` المرفق هو bootstrap مخصص يتحقق من checksum لتنزيل Gradle 8.14.8، وليس Gradle Wrapper القياسي.
+يتطلب البناء JDK 17 وAndroid SDK Platform 35 وBuild Tools 35.0.0. سكربت `gradlew` المرفق مشغّل bootstrap مخصص يتحقق من SHA-256 لتنزيل Gradle 8.14.8، وليس Gradle Wrapper القياسي.
 
 ```sh
-./gradlew assembleDebug
+./gradlew assembleStandardDebug assembleProDebug
 ```
 
-المخرج: `app/build/outputs/apk/debug/app-debug.apk`. هذا APK تجريبي غير موقع للنشر في Play Store. لم يُضَف سير GitHub Actions بعد لأن اتصال GitHub الحالي لا يملك صلاحية كتابة ملفات workflows.
+- **Standard:** الإصدار القياسي بمحرك MDR الحالي.
+- **Pro:** يضيف محرك الفيزياء ثلاثي الأبعاد `cannon-es`، إصدار 0.20.0 بترخيص MIT، ويحمّله عند الطلب.
+
+المخرجات: `app/build/outputs/apk/standard/debug/app-standard-debug.apk` و`app/build/outputs/apk/pro/debug/app-pro-debug.apk`. كلاهما debug APK غير موقّع للنشر في Play Store. GitHub Actions يختبر المصدر ويبني النسختين ويرفعهما كملفين منفصلين عند دفع الفرع.
+
+## حقوق المكونات
+
+- `cannon-es` 0.20.0: محرك فيزياء JavaScript من مشروع [pmndrs/cannon-es](https://github.com/pmndrs/cannon-es)، ترخيص MIT محفوظ في `third_party/CANNON-ES-LICENSE`.
+- سجل مراجعة المصادر المفتوحة، بما فيها المشاريع الإقليمية التي لا تملك ترخيصاً واضحاً، موجود في `docs/OPEN_SOURCE_REVIEW.md`.
 
 ## النشر
 
 - **GitHub Pages:** شغّل `npm run build:pages` لتحديث `docs/` ثم ادفع الفرع؛ مصدر النشر هو مجلد `docs` (تفعيل GitHub Pages من إعدادات المستودع يحتاج صلاحيات Pages).
 - **Vercel:** `vercel.json` يبني نسخة الويب إلى `dist/`؛ يتطلب ربط حساب GitHub داخل Vercel أولاً.
-- **GitHub:** يحتوي الفرع على المصدر والاختبارات وقالب APK Android، لكن سير CI لم يُفعّل بعد لأن اتصال GitHub يفتقد صلاحية كتابة workflows.
+- **GitHub Actions:** يبني نسختَي Standard وPro ويرفعهما كـ artifacts منفصلين بعد نجاح الاختبارات.
 
 ## ملاحظات الأمان والحدود
 
